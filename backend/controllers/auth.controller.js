@@ -7,7 +7,7 @@ const signup = async (req, res) => {
     const { email, password, name } = req.body;
 
     const userExists = await User.findOne({ email });
-    if (userExists) return res.status(400).json({ message: 'User already exists' });
+    if (userExists) return res.status(400).json({success: false, message: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -27,9 +27,9 @@ const signup = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000, 
     });
 
-    res.status(201).json({ success: true, message: 'Registered successfully' });
+    res.status(201).json({ success: true, message: 'Registered successfully'});
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    res.status(500).json({success: false, message: 'Internal Server Error', error: error.message });
   }
 };
 
@@ -37,11 +37,16 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+  return res.status(400).json({ message: 'Email and password are required' });
+}
+
+
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid email or password' });
+    if (!user) return res.status(400).json({success: false, message: 'Invalid email or password' });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid email or password' });
+    if (!isMatch) return res.status(400).json({success: false, message: 'Invalid email or password' });
 
     const token = generateToken(user);
 
@@ -51,9 +56,9 @@ const login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
-    res.json({ success: true, message: 'Logged in successfully', token });
+    res.json({ success: true, message: 'Logged in successfully'});
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    res.status(500).json({success: false, message: 'Internal Server Error', error: error.message });
   }
 };
 
@@ -62,15 +67,15 @@ const logout = (req, res) => {
     res.clearCookie('token');
     res.json({ success: true, message: 'Logged out successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    res.status(500).json({success: false, message: 'Internal Server Error', error: error.message });
   }
 };
 
-const isAuthenticated = (req, res) => {
+const isAuthenticated = async (req, res) => {
   try {
     res.json({success: true, message : "Authenticated"});
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    res.status(500).json({success: false, message: 'Internal Server Error', error: error.message });
   }
 };
 

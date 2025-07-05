@@ -10,7 +10,7 @@ import authRouter from './routes/auth.routes.js';
 
 const app = express();
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+const allowedOrigins = ['http://localhost:5173',]
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -20,10 +20,12 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'), false);
     }
   },
+   credentials: true,
 };
 
-app.use(cookieParser());
 app.use(cors(corsOptions));
+
+app.use(cookieParser());
 app.use(express.json());
 
 app.use('/api/auth', authRouter);

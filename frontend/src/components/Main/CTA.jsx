@@ -1,7 +1,11 @@
 import React from 'react'
 import { ScrollReveal } from './ScrollReveal';
+import { useAppContext } from '../../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 
 const CTA = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAppContext();
   return (
     <div>
       {/* Final CTA Section */}
@@ -25,9 +29,15 @@ const CTA = () => {
                 </ScrollReveal>
                 
                 <ScrollReveal direction="up" delay={600}>
-                  <button className="bg-gradient-to-r from-sky-500 to-emerald-500 text-white px-10 py-4 rounded-full text-lg font-semibold hover:from-sky-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                  {!isAuthenticated ? (
+                    <button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-sky-500 to-emerald-500 text-white px-10 py-4 rounded-full text-lg font-semibold hover:from-sky-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
                     Sign Up Now
                   </button>
+                  ) : (
+                    <button onClick={() => navigate('/')} className="bg-gradient-to-r from-sky-500 to-emerald-500 text-white px-10 py-4 rounded-full text-lg font-semibold hover:from-sky-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                      Dashboard
+                  </button>
+                  )}
                   <p className="text-gray-500 mt-4">Free forever. No credit card required.</p>
                 </ScrollReveal>
               </div>

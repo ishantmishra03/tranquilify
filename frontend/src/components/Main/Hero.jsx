@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { ScrollReveal } from "../Main/ScrollReveal";
 import {Link, useNavigate} from 'react-router-dom';
+import { useAppContext } from '../../context/AppContext';
 
 const Hero = () => {
+  const {isAuthenticated} = useAppContext();
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -49,12 +51,20 @@ const Hero = () => {
 
             <ScrollReveal direction="up" delay={1000}>
               <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                <Link to="/auth" className="bg-gradient-to-r from-sky-500 to-emerald-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-sky-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer">
+                {!isAuthenticated? (
+                  <Link to="/auth" className="bg-gradient-to-r from-sky-500 to-emerald-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-sky-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer">
                   Try for Free
                 </Link>
-                <button onClick={() => navigate('/auth')} className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full text-lg font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
+                ) : (
+                  <Link to="/" className="bg-gradient-to-r from-sky-500 to-emerald-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-sky-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer">
+                  Try for Free
+                </Link>
+                )}
+                {!isAuthenticated && (
+                  <button onClick={() => navigate('/auth')} className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full text-lg font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
                   Login
                 </button>
+                )}
               </div>
             </ScrollReveal>
           </div>

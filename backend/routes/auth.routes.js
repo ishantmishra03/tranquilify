@@ -6,6 +6,6 @@ import { signup, login, logout, isAuthenticated } from '../controllers/auth.cont
 authRouter.post('/signup', signup);
 authRouter.post('/login', login);
 authRouter.post('/logout', protect, logout);
-authRouter.post('/isAuth', protect, isAuthenticated);
+authRouter.get('/isAuth', protect, isAuthenticated);
 
 export default authRouter;

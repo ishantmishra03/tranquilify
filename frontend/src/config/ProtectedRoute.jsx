@@ -1,8 +1,8 @@
 import { Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useAppContext } from '../context/AppContext';
 
 const ProtectedRoute = ({ children }) => {
-    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+    const {isAuthenticated} = useAppContext();
     
     if (!isAuthenticated) {
         return <Navigate to='/auth' replace={true} />;
