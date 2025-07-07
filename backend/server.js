@@ -7,6 +7,8 @@ import connectDB from './config/db.config.js';
 await connectDB();
 
 import authRouter from './routes/auth.routes.js';
+import stressRouter from './routes/stress.routes.js';
+import habitRouter from './routes/habit.routes.js';
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use('/api/auth', authRouter);
+app.use('/api/stress', stressRouter);
+app.use('/api/habits', habitRouter);
 
 app.get('/', (req, res) => {
   res.send('SERVER WORKING !');

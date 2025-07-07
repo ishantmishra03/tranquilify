@@ -1,14 +1,26 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   email: {
     type: String,
     unique: true,
     lowercase: true,
     trim: true,
+    required: true,
   },
-  password: String,
+  password: {
+    type: String,
+    required: true,
+  },
+  streak: {
+    type: Number,
+    default: 0,
+  },
 }, {
   timestamps: true,
 });

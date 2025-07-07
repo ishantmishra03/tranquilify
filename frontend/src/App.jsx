@@ -5,7 +5,7 @@ import axios from "./config/axios";
 
 import Home from "./pages/Home";
 import { Auth } from "./pages/Auth/Auth";
-import Dashboard from "./pages/Dashboard/Dashboard";
+import {Dashboard} from "./pages/Dashboard/Dashboard";
 import Mood from './pages/Mood';
 
 import ProtectedRoute from './config/ProtectedRoute';
