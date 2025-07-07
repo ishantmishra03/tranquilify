@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useAppContext } from '../../context/AppContext';
+import axios from '../../config/axios';
+import { toast } from 'react-hot-toast';
 import { 
   Home, 
   Heart, 
@@ -15,6 +18,7 @@ import { StressForm } from '../../components/Dashboard/StressForm';
 import { HabitsPage } from '../../components/Dashboard/HabitsPage';
 
 export const Dashboard = () => {
+  const { userData, setIsAuthenticated } = useAppContext();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState(null);
@@ -89,8 +93,16 @@ export const Dashboard = () => {
     { id: 'habits', label: 'Habits', icon: Target },
   ];
 
-  const handleLogout = () => {
-    console.log('Logging out...');
+   const handleLogout = async () => {
+    try {
+      const { data } = await axios.post("/api/auth/logout");
+      if (data.success) {
+        setIsAuthenticated(false);
+        toast.success(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const renderContent = () => {
@@ -150,11 +162,11 @@ export const Dashboard = () => {
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold">
-                {data.user.name.split(' ').map(n => n[0]).join('')}
+                {userData.name.split(' ').map(n => n[0]).join('')}
               </div>
               <div>
-                <div className="font-semibold text-gray-900">{data.user.name}</div>
-                <div className="text-sm text-gray-600">{data.user.streak} day streak 🔥</div>
+                <div className="font-semibold text-gray-900">{userData.name}</div>
+                <div className="text-sm text-gray-600">{userData.streak} day streak 🔥</div>
               </div>
             </div>
           </div>
@@ -226,11 +238,11 @@ export const Dashboard = () => {
               <div className="hidden sm:flex items-center space-x-2 bg-emerald-50 px-3 py-2 rounded-full">
                 <Award className="w-4 h-4 text-emerald-600" />
                 <span className="text-sm font-medium text-emerald-700">
-                  {data.user.streak} Day Streak
+                  {userData.streak} Day Streak
                 </span>
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                {data.user.name.split(' ').map(n => n[0]).join('')}
+                {userData.name.split(' ').map(n => n[0]).join('')}
               </div>
             </div>
           </div>
