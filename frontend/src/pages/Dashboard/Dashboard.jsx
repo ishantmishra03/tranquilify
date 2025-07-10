@@ -31,6 +31,7 @@ export const Dashboard = () => {
         const jsonData = await response.json();
         setData(jsonData);
       } catch (error) {
+        console.log(error.message);
         const fallbackData = {
           user: {
             name: "Sarah Johnson",
@@ -112,11 +113,11 @@ export const Dashboard = () => {
       case 'dashboard':
         return <DashboardMain data={data} />;
       case 'mood-check':
-        return <MoodCheck data={data} />;
+        return <MoodCheck/>;
       case 'stress-form':
-        return <StressForm data={data} />;
+        return <StressForm/>;
       case 'habits':
-        return <HabitsPage data={data} />;
+        return <HabitsPage/>;
       default:
         return <DashboardMain data={data} />;
     }

@@ -11,6 +11,7 @@ import stressRouter from './routes/stress.routes.js';
 import habitRouter from './routes/habit.routes.js';
 import userRouter from './routes/user.routes.js';
 import aiRouter from './routes/ai.routes.js';
+import moodRouter from './routes/mood.routes.js';
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/stress', stressRouter);
 app.use('/api/habits', habitRouter);
 app.use('/api/user', userRouter);
 app.use('/api/ai', aiRouter);
+app.use('/api/mood', moodRouter);
 
 app.get('/', (req, res) => {
   res.send('SERVER WORKING !');

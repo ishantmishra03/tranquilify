@@ -4,6 +4,7 @@ import axios from '../config/axios';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [userData, setUserData] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -32,6 +33,8 @@ export const AppProvider = ({ children }) => {
         isAuthenticated,
         setIsAuthenticated,
         userData,
+        isDarkMode,
+        setIsDarkMode,
       }}
     >
       {children}
