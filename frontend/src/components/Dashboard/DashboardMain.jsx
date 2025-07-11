@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAppContext } from "../../context/AppContext";
 import {StressGraph} from "../Figure/StressGraph";
+import { MoodGraph } from "../Figure/MoodGraph";
 import { StressCard } from './StressCard';
+import { MoodCard } from './MoodCard';
 import {
   TrendingUp,
   TrendingDown,
@@ -91,16 +93,6 @@ export const DashboardMain = ({ data }) => {
     fetchLatestHabits();
   }, []);
 
-  const getMoodEmoji = (mood) => {
-    if (mood >= 5) return "😊";
-    if (mood >= 4) return "🙂";
-    if (mood >= 3) return "😐";
-    if (mood >= 2) return "😔";
-    return "😢";
-  };
-
-
-  const recentMoodData = data.moodData.slice(-7);
   const completedHabits = habits.filter((habit) => habit.completed);
 
   return (
@@ -132,7 +124,7 @@ export const DashboardMain = ({ data }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Mood Card */}
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
+          {/* <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center">
                 <Heart className="w-6 h-6 text-rose-600" />
@@ -156,7 +148,8 @@ export const DashboardMain = ({ data }) => {
             <span className="text-2xl">
               {getMoodEmoji(data.weeklyStats.averageMood)}
             </span>
-          </div>
+          </div> */}
+          <MoodCard />
         </div>
 
         {/* Stress Card */}
@@ -241,7 +234,7 @@ export const DashboardMain = ({ data }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Mood Trends */}
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <div className="flex items-center justify-between mb-6">
+          {/* <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-900">Mood Trends</h3>
             <Calendar className="w-5 h-5 text-gray-400" />
           </div>
@@ -272,7 +265,8 @@ export const DashboardMain = ({ data }) => {
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
+          <MoodGraph/>
         </div>
 
         {/* Stress Factors */}

@@ -8,18 +8,38 @@ import requests
 import json
 from dotenv import load_dotenv
 import os
+import time
 
 # Load environment variables from .env file
 load_dotenv()
-
-# Set Groq API key
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 app = Flask(__name__)
 CORS(app)
 
+# In-memory rate limit tracker: {ip_address: {route: last_timestamp}}
+rate_limit = {}
+RATE_LIMIT_SECONDS = 300  # 5 minutes
+
+def is_rate_limited(ip, route):
+    now = time.time()
+    user_limits = rate_limit.get(ip, {})
+
+    last_time = user_limits.get(route)
+    if last_time and now - last_time < RATE_LIMIT_SECONDS:
+        return True
+
+    # Update access time
+    user_limits[route] = now
+    rate_limit[ip] = user_limits
+    return False
+
 @app.route('/analyze', methods=['POST'])
 def analyze_mood():
+    ip = request.remote_addr
+    if is_rate_limited(ip, 'analyze'):
+        return jsonify({'success': False, 'message': 'You can only analyze mood once every 5 minutes.'}), 429
+
     try:
         data = request.json
         image_data = data.get('image')
@@ -43,20 +63,28 @@ def analyze_mood():
 
 @app.route('/suggest-coping', methods=['POST'])
 def suggest_coping():
+    ip = request.remote_addr
+    if is_rate_limited(ip, 'suggest-coping'):
+        return jsonify({'success': False, 'message': 'You can only request coping strategies once every 5 minutes.'}), 429
+
     try:
         data = request.json
         stress_level = data.get('stress_level')
-        stress_factors = data.get('stress_factors', [])
-        symptoms = data.get('symptoms', [])
+        stress_factors = data.get('stress_factors')
+        symptoms = data.get('symptoms')
 
-        if stress_level is None:
-            return jsonify({'success': False, 'message': 'Missing stress level'}), 400
+        if stress_level is None or not isinstance(stress_level, int):
+            return jsonify({'success': False, 'message': 'Stress level is required and must be an integer'}), 400
+        if not stress_factors or not isinstance(stress_factors, list) or len(stress_factors) == 0:
+            return jsonify({'success': False, 'message': 'At least one stress factor is required'}), 400
+        if not symptoms or not isinstance(symptoms, list) or len(symptoms) == 0:
+            return jsonify({'success': False, 'message': 'At least one symptom is required'}), 400
 
         prompt = f"""
 You are a mental wellness AI assistant. A user reports:
 - Stress level: {stress_level} / 4
-- Stress factors: {', '.join(stress_factors) if stress_factors else 'None'}
-- Symptoms: {', '.join(symptoms) if symptoms else 'None'}
+- Stress factors: {', '.join(stress_factors)}
+- Symptoms: {', '.join(symptoms)}
 
 Suggest 5 short, practical coping strategies. Return ONLY a JSON array of strings. No explanations.
 """
@@ -67,7 +95,7 @@ Suggest 5 short, practical coping strategies. Return ONLY a JSON array of string
         }
 
         payload = {
-            "model": "llama3-8b-8192",  
+            "model": "llama3-8b-8192",
             "messages": [
                 {"role": "system", "content": "You are a helpful mental wellness assistant."},
                 {"role": "user", "content": prompt}
@@ -82,16 +110,14 @@ Suggest 5 short, practical coping strategies. Return ONLY a JSON array of string
             json=payload
         )
 
-        print("Groq API response:", response.status_code)
-        print(response.text)
-
         if response.status_code != 200:
             return jsonify({'success': False, 'message': 'Failed to get response from Groq'}), 500
 
         content = response.json()['choices'][0]['message']['content'].strip()
-
-        # Ensure it's proper JSON
         strategies = json.loads(content)
+
+        if not isinstance(strategies, list):
+            raise ValueError("Invalid format from Groq response")
 
         return jsonify({'success': True, 'coping_strategies': strategies})
 

@@ -12,7 +12,7 @@ const getStressColor = (level) => {
 
 export const StressCard = () => {
   const [averageStress, setAverageStress] = useState(null);
-  const [stressReduction, setStressReduction] = useState(0); // Optional: change logic if needed
+  const [stressReduction, setStressReduction] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,8 +24,6 @@ export const StressCard = () => {
           const avg = levels.reduce((a, b) => a + b, 0) / levels.length;
           setAverageStress(avg.toFixed(1));
 
-          // Optional: compute % reduction compared to last week (if available)
-          // For now just mock a 10% reduction:
           setStressReduction(10);
         } else {
           setAverageStress(0);
