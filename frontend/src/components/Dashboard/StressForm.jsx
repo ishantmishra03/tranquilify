@@ -58,7 +58,7 @@ export const StressForm = () => {
       }
     } catch (err) {
       console.error(err);
-      toast.error('Failed to fetch suggestions');
+      toast.error(err.response?.data.message);
     } finally {
       setIsSuggesting(false);
     }

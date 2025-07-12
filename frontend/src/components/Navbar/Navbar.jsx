@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import { toast } from "react-hot-toast";
 import axios from "../../config/axios";
+import Logo from "../Favicon/Logo";
 
 const Navbar = () => {
   const location = useLocation();
@@ -13,7 +14,6 @@ const Navbar = () => {
     isAuthenticated,
     setIsAuthenticated,
     isDarkMode,
-    setIsDarkMode,
   } = useAppContext();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -29,7 +29,6 @@ const Navbar = () => {
     }
   };
 
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   return (
     <div>
@@ -43,9 +42,9 @@ const Navbar = () => {
           <div className="flex justify-between items-center h-16">
             <Link to="/">
               <div className="flex items-center space-x-2">
-                <div className="text-2xl">🌿</div>
+                <div className="text-2xl"><Logo width="50" height="50"/></div>
                 <span className="text-xl font-semibold">
-                  MindBalance
+                  Tranquilify
                 </span>
               </div>
             </Link>

@@ -3,6 +3,7 @@ import { ScrollReveal } from "../Main/ScrollReveal";
 import {Link, useNavigate} from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 
+
 const Hero = () => {
   const {isAuthenticated} = useAppContext();
   const [isVisible, setIsVisible] = useState(false);
@@ -30,7 +31,7 @@ const Hero = () => {
             <ScrollReveal direction="up" delay={400}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-sky-600 to-emerald-600 bg-clip-text text-transparent">
-                  MindBalance
+                  Tranquilify
                 </span>
               </h1>
             </ScrollReveal>

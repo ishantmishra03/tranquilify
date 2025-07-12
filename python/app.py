@@ -124,6 +124,59 @@ Suggest 5 short, practical coping strategies. Return ONLY a JSON array of string
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
+@app.route('/chat', methods=['POST'])
+def ai_therapist_chat():
+    try:
+        data = request.json
+        messages = data.get("messages")
+
+        if not messages or not isinstance(messages, list):
+            return jsonify({'success': False, 'message': 'Messages must be a list'}), 400
+
+        # Prepare payload for Groq API
+        payload = {
+    "model": "llama3-8b-8192",
+    "messages": [
+        {
+            "role": "system",
+            "content": (
+                "You are a compassionate AI therapist. Respond with empathy and encouragement. "
+                "Always format your response in clean, readable **Markdown**. Use:\n"
+                "- bullet points for lists\n"
+                "- bold text for emphasis\n"
+                "- headers where appropriate\n"
+                "- line breaks between points\n\n"
+                "Never include raw HTML. Markdown only."
+            )
+        },
+        *messages  # previous messages
+    ],
+    "temperature": 0.7,
+    "max_tokens": 500
+}
+
+
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers=headers,
+            json=payload
+        )
+
+        if response.status_code != 200:
+            return jsonify({'success': False, 'message': 'Failed to get response from Groq'}), 500
+
+        content = response.json()['choices'][0]['message']['content'].strip()
+
+        return jsonify({'success': True, 'reply': content})
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

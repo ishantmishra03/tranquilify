@@ -9,8 +9,8 @@ const MoodCheck = () => {
   const canvasRef = useRef(null);
 
   const [mood, setMood] = useState(null);
-  const [pendingMood, setPendingMood] = useState(null); // For auto-detected mood before saving
-  const [mode, setMode] = useState(''); // '', 'manual', 'auto'
+  const [pendingMood, setPendingMood] = useState(null); 
+  const [mode, setMode] = useState(''); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -56,7 +56,7 @@ const MoodCheck = () => {
     const dataURL = canvas.toDataURL('image/jpeg');
 
     try {
-      const { data } = await api.post('http://localhost:5001/analyze', {
+      const { data } = await api.post(`${import.meta.env.VITE_BACKEND2_URL}/analyze`, {
         image: dataURL,
       });
 

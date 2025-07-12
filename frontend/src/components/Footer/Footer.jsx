@@ -1,4 +1,4 @@
-
+import Logo from "../Favicon/Logo";
 const Footer = () => {
   return (
     <div>
@@ -8,8 +8,8 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             
               <div className="flex items-center space-x-2 mb-4">
-                <div className="text-2xl">🌿</div>
-                <span className="text-xl font-semibold">MindBalance</span>
+                <div className="text-2xl"><Logo width="60" height="60"/></div>
+                <span className="text-xl font-semibold">Tranquilify</span>
               </div>
               <p className="text-gray-400 mb-4 max-w-md">
                 Your personal wellness companion for tracking moods, building habits, and creating a more balanced life.

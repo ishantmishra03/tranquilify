@@ -9,7 +9,7 @@ const Testimonials = () => {
     {
       name: "Sarah Johnson",
       role: "Marketing Manager",
-      text: "MindBalance has completely transformed how I approach my mental health. The mood tracking helps me identify patterns I never noticed before.",
+      text: "Tranquilify has completely transformed how I approach my mental health. The mood tracking helps me identify patterns I never noticed before.",
       rating: 5,
     },
     {
@@ -57,7 +57,7 @@ const Testimonials = () => {
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
               Join a community of people who have transformed their wellness
-              journey with MindBalance.
+              journey with Tranquilify.
             </p>
           </ScrollReveal>
 

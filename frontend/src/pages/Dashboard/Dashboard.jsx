@@ -1,25 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { useAppContext } from '../../context/AppContext';
-import axios from '../../config/axios';
-import { toast } from 'react-hot-toast';
-import { 
-  Home, 
-  Heart, 
-  Target, 
-  LogOut, 
-  Menu, 
+import React, { useState, useEffect } from "react";
+import { useAppContext } from "../../context/AppContext";
+import axios from "../../config/axios";
+import { Link, Navigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import {
+  Home,
+  Heart,
+  Target,
+  LogOut,
+  Menu,
   X,
   Award,
-  Activity
-} from 'lucide-react';
-import { DashboardMain } from '../../components/Dashboard/DashboardMain';
-import  MoodCheck  from '../../components/Dashboard/MoodCheck';
-import { StressForm } from '../../components/Dashboard/StressForm';
-import { HabitsPage } from '../../components/Dashboard/HabitsPage';
+  Activity,
+  HeartPulse,
+} from "lucide-react";
+import { DashboardMain } from "../../components/Dashboard/DashboardMain";
+import MoodCheck from "../../components/Dashboard/MoodCheck";
+import { StressForm } from "../../components/Dashboard/StressForm";
+import { HabitsPage } from "../../components/Dashboard/HabitsPage";
+import Logo from "../../components/Favicon/Logo";
 
 export const Dashboard = () => {
   const { userData, setIsAuthenticated } = useAppContext();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,46 +30,19 @@ export const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch('/src/data/data.json');
+        const response = await fetch("/src/data/data.json");
         const jsonData = await response.json();
         setData(jsonData);
       } catch (error) {
         console.log(error.message);
         const fallbackData = {
-          user: {
-            name: "Sarah Johnson",
-            email: "sarah@example.com",
-            joinDate: "2024-01-15",
-            streak: 12
-          },
-          moodData: [
-            { date: "2024-01-01", mood: 4, energy: 3, stress: 2 },
-            { date: "2024-01-02", mood: 5, energy: 4, stress: 1 },
-            { date: "2024-01-03", mood: 3, energy: 2, stress: 4 },
-            { date: "2024-01-04", mood: 4, energy: 4, stress: 2 },
-            { date: "2024-01-05", mood: 5, energy: 5, stress: 1 },
-            { date: "2024-01-06", mood: 2, energy: 2, stress: 5 },
-            { date: "2024-01-07", mood: 4, energy: 3, stress: 3 }
-          ],
-          habits: [
-            { id: 1, name: "Morning Meditation", streak: 12, completed: true, icon: "🧘", color: "emerald" },
-            { id: 2, name: "Daily Exercise", streak: 8, completed: false, icon: "🏃", color: "blue" },
-            { id: 3, name: "Gratitude Journal", streak: 15, completed: true, icon: "📝", color: "purple" }
-          ],
-          stressFactors: [
-            { factor: "Work", level: 3, percentage: 35 },
-            { factor: "Relationships", level: 2, percentage: 20 },
-            { factor: "Health", level: 1, percentage: 10 },
-            { factor: "Finances", level: 4, percentage: 25 },
-            { factor: "Other", level: 2, percentage: 10 }
-          ],
           weeklyStats: {
             averageMood: 4.1,
             averageStress: 2.3,
             averageEnergy: 3.4,
             moodImprovement: 12,
             stressReduction: 18,
-            energyIncrease: 8
+            energyIncrease: 8,
           },
           aiTips: [
             {
@@ -74,9 +50,9 @@ export const Dashboard = () => {
               title: "Breathing Exercise",
               tip: "Try the 4-7-8 breathing technique: Inhale for 4 counts, hold for 7, exhale for 8.",
               category: "breathing",
-              icon: "🌬️"
-            }
-          ]
+              icon: "🌬️",
+            },
+          ],
         };
         setData(fallbackData);
       } finally {
@@ -88,13 +64,14 @@ export const Dashboard = () => {
   }, []);
 
   const sidebarItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home },
-    { id: 'mood-check', label: 'Mood Check', icon: Heart },
-    { id: 'stress-form', label: 'Stress Form', icon: Activity },
-    { id: 'habits', label: 'Habits', icon: Target },
+    { id: "dashboard", label: "Dashboard", icon: Home },
+    { id: "mood-check", label: "Mood Check", icon: Heart },
+    { id: "stress-form", label: "Stress Form", icon: Activity },
+    { id: "habits", label: "Habits", icon: Target },
+    {id: "therapist", label : "Therapist" , icon: HeartPulse},
   ];
 
-   const handleLogout = async () => {
+  const handleLogout = async () => {
     try {
       const { data } = await axios.post("/api/auth/logout");
       if (data.success) {
@@ -110,14 +87,16 @@ export const Dashboard = () => {
     if (!data) return null;
 
     switch (activeTab) {
-      case 'dashboard':
+      case "dashboard":
         return <DashboardMain data={data} />;
-      case 'mood-check':
-        return <MoodCheck/>;
-      case 'stress-form':
-        return <StressForm/>;
-      case 'habits':
-        return <HabitsPage/>;
+      case "mood-check":
+        return <MoodCheck />;
+      case "stress-form":
+        return <StressForm />;
+      case "habits":
+        return <HabitsPage />;
+      case "therapist":
+        return <Navigate to="/therapist" replace="true" />
       default:
         return <DashboardMain data={data} />;
     }
@@ -137,22 +116,28 @@ export const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-rose-50 font-['Inter']">
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
-      <div className={`fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0`}>
+      <div
+        className={`fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0`}
+      >
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-6 border-b border-gray-100">
-            <div className="flex items-center space-x-2">
-              <div className="text-2xl">🌿</div>
-              <span className="text-xl font-semibold text-gray-800">MindBalance</span>
-            </div>
-            <button 
+          <div className="flex items-center justify-between p-6 border-b border-gray-100 cursor-pointer">
+            <Link to="/">
+              <div className="flex items-center space-x-2">
+                <div className="text-2xl"><Logo width="50" height="50"/></div>
+                <span className="text-xl font-semibold text-gray-800">
+                  Tranquilify
+                </span>
+              </div>
+            </Link>
+            <button
               onClick={() => setIsSidebarOpen(false)}
               className="lg:hidden p-1 rounded-lg hover:bg-gray-100"
             >
@@ -163,11 +148,18 @@ export const Dashboard = () => {
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold">
-                {userData.name.split(' ').map(n => n[0]).join('')}
+                {userData.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
               </div>
               <div>
-                <div className="font-semibold text-gray-900">{userData.name}</div>
-                <div className="text-sm text-gray-600">{userData.streak} day streak 🔥</div>
+                <div className="font-semibold text-gray-900">
+                  {userData.name}
+                </div>
+                <div className="text-sm text-gray-600">
+                  {userData.streak} day streak 🔥
+                </div>
               </div>
             </div>
           </div>
@@ -185,8 +177,8 @@ export const Dashboard = () => {
                       }}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                         activeTab === item.id
-                          ? 'bg-gradient-to-r from-sky-500 to-emerald-500 text-white shadow-lg'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? "bg-gradient-to-r from-sky-500 to-emerald-500 text-white shadow-lg"
+                          : "text-gray-700 hover:bg-gray-100"
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -222,19 +214,19 @@ export const Dashboard = () => {
               </button>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 capitalize">
-                  {activeTab.replace('-', ' ')}
+                  {activeTab.replace("-", " ")}
                 </h1>
                 <p className="text-gray-600">
-                  {new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                  {new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
                   })}
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <div className="hidden sm:flex items-center space-x-2 bg-emerald-50 px-3 py-2 rounded-full">
                 <Award className="w-4 h-4 text-emerald-600" />
@@ -243,15 +235,16 @@ export const Dashboard = () => {
                 </span>
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                {userData.name.split(' ').map(n => n[0]).join('')}
+                {userData.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
               </div>
             </div>
           </div>
         </header>
 
-        <main className="p-6">
-          {renderContent()}
-        </main>
+        <main className="p-6">{renderContent()}</main>
       </div>
     </div>
   );

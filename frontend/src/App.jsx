@@ -6,6 +6,7 @@ import axios from "./config/axios";
 import Home from "./pages/Home";
 import { Auth } from "./pages/Auth/Auth";
 import {Dashboard} from "./pages/Dashboard/Dashboard";
+import Therapist from "./pages/Therapist/Therapist";
 
 import ProtectedRoute from './config/ProtectedRoute';
 
@@ -36,6 +37,11 @@ const App = () => {
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard/>
+          </ProtectedRoute>
+        } />
+        <Route path="/therapist" element={
+          <ProtectedRoute>
+            <Therapist/>
           </ProtectedRoute>
         } />
       </Routes>

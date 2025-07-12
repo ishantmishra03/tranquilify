@@ -23,7 +23,7 @@ const CTA = () => {
                 
                 <ScrollReveal direction="up" delay={400}>
                   <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                    Join thousands of people who have already started their wellness journey with MindBalance. 
+                    Join thousands of people who have already started their wellness journey with Tranquilify. 
                     Your mental health matters, and we're here to help.
                   </p>
                 </ScrollReveal>

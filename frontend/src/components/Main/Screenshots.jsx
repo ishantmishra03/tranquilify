@@ -27,7 +27,7 @@ const Screenshots = () => {
         <div className="max-w-7xl mx-auto">
           <ScrollReveal direction="up" className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              See MindBalance in action
+              See Tranquilify in action
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
               A beautiful, intuitive interface designed to make wellness tracking effortless and enjoyable.

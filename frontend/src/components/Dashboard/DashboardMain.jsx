@@ -17,7 +17,7 @@ import {
 import axios from "../../config/axios";
 import { toast } from "react-hot-toast";
 
-export const DashboardMain = ({ data }) => {
+export const DashboardMain = ({data}) => {
   const { userData } = useAppContext();
   const [habits, setHabits] = useState([]);
   const [loadingHabits, setLoadingHabits] = useState(true);

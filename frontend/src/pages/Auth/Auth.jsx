@@ -4,6 +4,8 @@ import { toast } from "react-hot-toast";
 import axios from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
+import { Link } from "react-router-dom";
+import Logo from "../../components/Favicon/Logo";
 
 export const Auth = () => {
   const { setIsAuthenticated, isAuthenticated } = useAppContext();
@@ -11,10 +13,10 @@ export const Auth = () => {
 
   //Redirect if already loggeIn
   useEffect(() => {
-  if (isAuthenticated) {
-    navigate("/dashboard", { replace: true });
-  }
-}, [isAuthenticated, navigate]);
+    if (isAuthenticated) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -142,12 +144,14 @@ export const Auth = () => {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="text-3xl">🌿</div>
-            <span className="text-2xl font-bold text-gray-800">
-              MindBalance
-            </span>
-          </div>
+          <Link to="/">
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <div className="text-3xl"><Logo width="50" height="50"/></div>
+              <span className="text-2xl font-bold text-gray-800">
+                Tranquilify
+              </span>
+            </div>
+          </Link>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
             {isLogin ? "Welcome back" : "Create your account"}
           </h1>

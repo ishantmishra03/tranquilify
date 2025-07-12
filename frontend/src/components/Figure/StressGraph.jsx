@@ -55,7 +55,7 @@ export const StressGraph = () => {
       {
         label: 'Average Stress Level',
         data: stressLevels,
-        backgroundColor: 'rgba(99, 102, 241, 0.7)', // Indigo-500 from Tailwind
+        backgroundColor: 'rgba(99, 102, 241, 0.7)', 
         borderRadius: 6,
         barPercentage: 0.6,
       },
@@ -70,7 +70,7 @@ export const StressGraph = () => {
         max: 4,
         ticks: {
           stepSize: 1,
-          callback: val => `${val}`, // show integer ticks only
+          callback: val => `${val}`, 
         },
         title: {
           display: true,
