@@ -38,7 +38,7 @@ export const createStressAssessment = async (req, res) => {
 // Get all stress assessments for the authenticated user
 export const getUserStressAssessments = async (req, res) => {
   try {
-    const assessments = await StressAssessment.find({ user: req.user._id }).sort({ date: -1 });
+    const assessments = await StressAssessment.find({ user: req.userId }).sort({ date: -1 });
     res.json({ success: true, data: assessments });
   } catch (error) {
     console.error('Error fetching stress assessments:', error);

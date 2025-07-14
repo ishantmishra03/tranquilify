@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../config/axios';
 import { toast } from 'react-hot-toast';
-import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+// Register only what's needed for a line chart
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export const StressGraph = () => {
   const [factors, setFactors] = useState([]);
@@ -42,11 +44,9 @@ export const StressGraph = () => {
   if (loading) return <p>Loading stress data...</p>;
   if (!factors.length) return <p>No stress factors found.</p>;
 
-  // Data for Chart.js
   const labels = factors.map(f => f.factor);
   const stressLevels = factors.map(f => f.level);
 
-  // Find the factor with max stress level
   const maxStressFactor = factors.reduce((max, curr) => (curr.level > max.level ? curr : max), factors[0]);
 
   const data = {
@@ -55,9 +55,12 @@ export const StressGraph = () => {
       {
         label: 'Average Stress Level',
         data: stressLevels,
-        backgroundColor: 'rgba(99, 102, 241, 0.7)', 
-        borderRadius: 6,
-        barPercentage: 0.6,
+        fill: false,
+        borderColor: 'rgba(99, 102, 241, 1)',
+        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+        pointBorderColor: 'rgba(99, 102, 241, 1)',
+        pointBackgroundColor: 'white',
+        tension: 0.3, // curve
       },
     ],
   };
@@ -70,12 +73,6 @@ export const StressGraph = () => {
         max: 4,
         ticks: {
           stepSize: 1,
-          callback: val => `${val}`, 
-        },
-        title: {
-          display: true,
-          text: 'Stress Level (0-4)',
-          font: { size: 14, weight: 'bold' },
         },
       },
       x: {
@@ -99,7 +96,7 @@ export const StressGraph = () => {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-      <Bar data={data} options={options} />
+      <Line data={data} options={options} />
       <div className="mt-4 text-center text-gray-700 font-semibold">
         Highest Stress Factor: <span className="text-indigo-600">{maxStressFactor.factor}</span> (Level {maxStressFactor.level})
       </div>

@@ -61,7 +61,7 @@ export const createHabit = async (req, res) => {
       name,
       icon: icon || '🎯',
       color: color || 'blue',
-      completions: [], // array of dates when completed
+      completions: [], 
       streak: 0,
     });
 

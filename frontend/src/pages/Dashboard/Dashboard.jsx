@@ -12,7 +12,7 @@ import {
   X,
   Award,
   Activity,
-  HeartPulse,
+  Bot,
 } from "lucide-react";
 import { DashboardMain } from "../../components/Dashboard/DashboardMain";
 import MoodCheck from "../../components/Dashboard/MoodCheck";
@@ -68,7 +68,7 @@ export const Dashboard = () => {
     { id: "mood-check", label: "Mood Check", icon: Heart },
     { id: "stress-form", label: "Stress Form", icon: Activity },
     { id: "habits", label: "Habits", icon: Target },
-    {id: "therapist", label : "Therapist" , icon: HeartPulse},
+    {id: "therapist", label : "Therapist" , icon: Bot},
   ];
 
   const handleLogout = async () => {

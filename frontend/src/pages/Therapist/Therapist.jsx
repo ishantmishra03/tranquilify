@@ -259,11 +259,7 @@ export default function Therapist() {
           <p className="text-sm text-red-500 text-center mt-2">⚠️ {error}</p>
         )}
 
-        {/* Footer Note */}
-        <p className="mt-3 text-center text-xs text-gray-500">
-          🔒 This conversation is completely private and temporary — nothing is
-          saved or stored.
-        </p>
+        
       </div>
     </div>
   );

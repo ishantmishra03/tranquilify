@@ -1,75 +1,70 @@
 import { useState, useEffect } from "react";
 import { useAppContext } from "../../context/AppContext";
-import {StressGraph} from "../Figure/StressGraph";
+import { StressGraph } from "../Figure/StressGraph";
 import { MoodGraph } from "../Figure/MoodGraph";
-import { StressCard } from './StressCard';
-import { MoodCard } from './MoodCard';
-import {
-  TrendingUp,
-  TrendingDown,
-  Heart,
-  Zap,
-  Activity,
-  Calendar,
-  Lightbulb,
-  Award,
-} from "lucide-react";
+import { StressCard } from "./StressCard";
+import { MoodCard } from "./MoodCard";
+import { TwoMinBreathing } from "../2MinBreathing";
+import { TrendingUp, Zap, Lightbulb, Award, Brain, Wind, Activity } from "lucide-react";
 import axios from "../../config/axios";
 import { toast } from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 
-export const DashboardMain = ({data}) => {
+export const DashboardMain = ({ data }) => {
+  const navigate = useNavigate();
   const { userData } = useAppContext();
   const [habits, setHabits] = useState([]);
   const [loadingHabits, setLoadingHabits] = useState(true);
+  const [showBreathing, setShowBreathing] = useState(false);
+
   // const [aiTips, setAiTips] = useState([]);
   // const [loadingTips, setLoadingTips] = useState(true);
 
-//   //Get latest AI tip
-//   useEffect(() => {
-//   const fetchTips = async () => {
-//     try {
-//       const res = await axios.get('/api/ai');
-//       if (res.data.success) {
-//         setAiTips(res.data.tip);
-//         console.log(res.data.tip);
-//         localStorage.setItem('aiTips', JSON.stringify(res.data.tip));
-//         localStorage.setItem('aiTipsFetchedAt', new Date().toISOString());
-//       } else {
-//         toast.error('Failed to load AI tips');
-//       }
-//     } catch (err) {
-//       console.error(err);
-//       toast.error('Error fetching AI tips');
-//     } finally {
-//       setLoadingTips(false);
-//     }
-//   };
+  //   //Get latest AI tip
+  //   useEffect(() => {
+  //   const fetchTips = async () => {
+  //     try {
+  //       const res = await axios.get('/api/ai');
+  //       if (res.data.success) {
+  //         setAiTips(res.data.tip);
+  //         console.log(res.data.tip);
+  //         localStorage.setItem('aiTips', JSON.stringify(res.data.tip));
+  //         localStorage.setItem('aiTipsFetchedAt', new Date().toISOString());
+  //       } else {
+  //         toast.error('Failed to load AI tips');
+  //       }
+  //     } catch (err) {
+  //       console.error(err);
+  //       toast.error('Error fetching AI tips');
+  //     } finally {
+  //       setLoadingTips(false);
+  //     }
+  //   };
 
-//   const shouldFetchNewTips = () => {
-//     const lastFetched = localStorage.getItem('aiTipsFetchedAt');
-//     if (!lastFetched) return true;
+  //   const shouldFetchNewTips = () => {
+  //     const lastFetched = localStorage.getItem('aiTipsFetchedAt');
+  //     if (!lastFetched) return true;
 
-//     const lastTime = new Date(lastFetched);
-//     const now = new Date();
-//     const diffInHours = (now - lastTime) / (1000 * 60 * 60); // convert ms to hours
-//     return diffInHours >= 24;
-//   };
+  //     const lastTime = new Date(lastFetched);
+  //     const now = new Date();
+  //     const diffInHours = (now - lastTime) / (1000 * 60 * 60); // convert ms to hours
+  //     return diffInHours >= 24;
+  //   };
 
-//   const loadTips = () => {
-//     const cachedTips = localStorage.getItem('aiTips');
-//     if (cachedTips) {
-//       setAiTips(JSON.parse(cachedTips));
-//       setLoadingTips(false);
-//     }
+  //   const loadTips = () => {
+  //     const cachedTips = localStorage.getItem('aiTips');
+  //     if (cachedTips) {
+  //       setAiTips(JSON.parse(cachedTips));
+  //       setLoadingTips(false);
+  //     }
 
-//     if (shouldFetchNewTips()) {
-//       fetchTips();
-//     }
-//   };
+  //     if (shouldFetchNewTips()) {
+  //       fetchTips();
+  //     }
+  //   };
 
-//   loadTips();
-// }, []);
-
+  //   loadTips();
+  // }, []);
 
   useEffect(() => {
     // Fetch latest 3 habits from backend on mount
@@ -93,7 +88,6 @@ export const DashboardMain = ({data}) => {
     fetchLatestHabits();
   }, []);
 
-  const completedHabits = habits.filter((habit) => habit.completed);
 
   return (
     <div className="space-y-6">
@@ -118,6 +112,31 @@ export const DashboardMain = ({data}) => {
           </div>
           <div className="text-6xl opacity-20">🌿</div>
         </div>
+      </div>
+
+      {/* Try AI Therapist Shortcut */}
+      <div className="flex flex-wrap gap-4 justify-start">
+        <Link
+          to="/therapist"
+          className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 text-white hover:from-sky-600 hover:to-emerald-600 transition shadow-lg hover:shadow-xl"
+        >
+          <Brain className="w-5 h-5" />
+          <span className="text-sm font-medium">Try AI Therapist</span>
+        </Link>
+        <button
+          onClick={() => setShowBreathing(true)}
+          className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-500 text-white hover:from-emerald-600 hover:to-sky-600 transition shadow-lg hover:shadow-xl"
+        >
+          <Wind className="w-5 h-5" />
+          <span className="text-sm font-medium">2-Min Magic</span>
+        </button>
+        <button
+          onClick={() => navigate('/stress-data')}
+          className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-500 text-white hover:from-emerald-600 hover:to-sky-600 transition shadow-lg hover:shadow-xl"
+        >
+          <Activity className="w-5 h-5" />
+          <span className="text-sm font-medium">Stress Data</span>
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -266,7 +285,7 @@ export const DashboardMain = ({data}) => {
               </div>
             ))}
           </div> */}
-          <MoodGraph/>
+          <MoodGraph />
         </div>
 
         {/* Stress Factors */}
@@ -324,10 +343,8 @@ export const DashboardMain = ({data}) => {
           </div>
         </div>
         <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="flex items-start space-x-3">
-            <span className="text-2xl">
-              {data.aiTips[0].icon}
-            </span>
+          <div className="flex items-start space-x-3">
+            <span className="text-2xl">{data.aiTips[0].icon}</span>
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">
                 {data.aiTips[0].title}
@@ -347,11 +364,8 @@ export const DashboardMain = ({data}) => {
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-gray-900">
-            Today's Habits
+            Latest Habits
           </h3>
-          <span className="text-sm text-gray-600">
-            {completedHabits.length}/{habits.length} completed
-          </span>
         </div>
 
         {loadingHabits ? (
@@ -380,6 +394,11 @@ export const DashboardMain = ({data}) => {
             ))}
           </div>
         )}
+      </div>
+      <div>
+        {showBreathing && (
+        <TwoMinBreathing onClose={() => setShowBreathing(false)} />
+      )}
       </div>
     </div>
   );

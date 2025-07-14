@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import { Auth } from "./pages/Auth/Auth";
 import {Dashboard} from "./pages/Dashboard/Dashboard";
 import Therapist from "./pages/Therapist/Therapist";
+import StressData from "./components/Dashboard/StressData";
 
 import ProtectedRoute from './config/ProtectedRoute';
 
@@ -42,6 +43,11 @@ const App = () => {
         <Route path="/therapist" element={
           <ProtectedRoute>
             <Therapist/>
+          </ProtectedRoute>
+        } />
+        <Route path="/stress-data" element={
+          <ProtectedRoute>
+            <StressData/>
           </ProtectedRoute>
         } />
       </Routes>
