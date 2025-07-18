@@ -29,12 +29,14 @@ export const getMoodPattern = async (req, res) => {
   try {
     const userId = req.userId; 
 
+     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
     if (!userId) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
     const moods = await MoodLog.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(userId) } },         
+      { $match: { user: new mongoose.Types.ObjectId(userId), createdAt: { $gte: sevenDaysAgo } } },         
       {
         $group: {
           _id: "$mood",

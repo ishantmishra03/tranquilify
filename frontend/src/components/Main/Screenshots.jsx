@@ -1,23 +1,23 @@
 import { ScrollReveal } from "./ScrollReveal";
 import { MoodIcon, MindfulIcon, InsightIcon } from './CustomIcons';
 
-  const screenshots = [
-    {
-      icon: <MoodIcon className="w-16 h-16" />,
-      title: "Mood Dashboard",
-      description: "Track your emotions with beautiful visualizations"
-    },
-    {
-      icon: <InsightIcon className="w-16 h-16" />,
-      title: "Progress Insights",
-      description: "Understand your patterns with smart analytics"
-    },
-    {
-      icon: <MindfulIcon className="w-16 h-16" />,
-      title: "Mindful Moments",
-      description: "Guided exercises for peace and clarity"
-    }
-  ];
+const screenshots = [
+  {
+    icon: <MoodIcon className="w-16 h-16" />,
+    title: "Emotional Tracking",
+    description: "Visualize your emotional journey and understand how you feel over time."
+  },
+  {
+    icon: <InsightIcon className="w-16 h-16" />,
+    title: "Wellness Insights",
+    description: "Discover meaningful patterns and trends through smart analytics."
+  },
+  {
+    icon: <MindfulIcon className="w-16 h-16" />,
+    title: "Mindful Practices",
+    description: "Access guided breathing, grounding, and relaxation exercises anytime."
+  }
+];
 
 const Screenshots = () => {
   return (
@@ -27,16 +27,16 @@ const Screenshots = () => {
         <div className="max-w-7xl mx-auto">
           <ScrollReveal direction="up" className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              See Tranquilify in action
+              Explore the Tranquilify Experience
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              A beautiful, intuitive interface designed to make wellness tracking effortless and enjoyable.
+              A modern, intuitive interface designed to support your mental well-being—effortlessly and beautifully.
             </p>
           </ScrollReveal>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {screenshots.map((screenshot, index) => (
-              <ScrollReveal 
+              <ScrollReveal
                 key={index}
                 direction="up"
                 delay={index * 200}
@@ -57,7 +57,7 @@ const Screenshots = () => {
         </div>
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default Screenshots
+export default Screenshots;

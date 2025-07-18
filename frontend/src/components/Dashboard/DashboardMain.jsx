@@ -5,7 +5,15 @@ import { MoodGraph } from "../Figure/MoodGraph";
 import { StressCard } from "./StressCard";
 import { MoodCard } from "./MoodCard";
 import { TwoMinBreathing } from "../2MinBreathing";
-import { TrendingUp, Zap, Lightbulb, Award, Brain, Wind, Activity } from "lucide-react";
+import {
+  TrendingUp,
+  Zap,
+  Lightbulb,
+  Award,
+  Brain,
+  Wind,
+  Activity,
+} from "lucide-react";
 import axios from "../../config/axios";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,6 +24,9 @@ export const DashboardMain = ({ data }) => {
   const [habits, setHabits] = useState([]);
   const [loadingHabits, setLoadingHabits] = useState(true);
   const [showBreathing, setShowBreathing] = useState(false);
+
+  const [pdfBlob, setPdfBlob] = useState(null);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   // const [aiTips, setAiTips] = useState([]);
   // const [loadingTips, setLoadingTips] = useState(true);
@@ -88,6 +99,34 @@ export const DashboardMain = ({ data }) => {
     fetchLatestHabits();
   }, []);
 
+  // Generate PDF handler
+  const generatePDF = async () => {
+    setPdfLoading(true);
+    try {
+      const res = await axios.get("/api/pdf", {
+        responseType: "blob",
+      });
+      setPdfBlob(new Blob([res.data], { type: "application/pdf" }));
+      toast.success("Mental Health Journal PDF generated!");
+    } catch (error) {
+      toast.error("Failed to generate PDF");
+      console.error(error);
+    }
+    setPdfLoading(false);
+  };
+
+  // Download PDF handler
+  const downloadPDF = () => {
+    if (!pdfBlob) return;
+    const url = window.URL.createObjectURL(pdfBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mental-health-journal.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="space-y-6">
@@ -96,7 +135,7 @@ export const DashboardMain = ({ data }) => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-2">
-              Welcome back, {userData.name.split(" ")[0]}! 👋
+              Welcome back, {userData?.name?.split(" ")[0] || ""}! 👋
             </h2>
             <p className="text-sky-100 mb-4">
               You're doing great on your wellness journey
@@ -131,7 +170,7 @@ export const DashboardMain = ({ data }) => {
           <span className="text-sm font-medium">2-Min Magic</span>
         </button>
         <button
-          onClick={() => navigate('/stress-data')}
+          onClick={() => navigate("/stress-data")}
           className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-500 text-white hover:from-emerald-600 hover:to-sky-600 transition shadow-lg hover:shadow-xl"
         >
           <Activity className="w-5 h-5" />
@@ -142,73 +181,12 @@ export const DashboardMain = ({ data }) => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Mood Card */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          {/* <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center">
-                <Heart className="w-6 h-6 text-rose-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Average Mood</h3>
-                <p className="text-sm text-gray-600">This week</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-1 text-emerald-600">
-              <TrendingUp className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                +{data.weeklyStats.moodImprovement}%
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-3xl font-bold text-gray-900">
-              {data.weeklyStats.averageMood}
-            </span>
-            <span className="text-2xl">
-              {getMoodEmoji(data.weeklyStats.averageMood)}
-            </span>
-          </div> */}
-          <MoodCard />
-        </div>
+
+        <MoodCard />
 
         {/* Stress Card */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          {/* <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <Activity className="w-6 h-6 text-orange-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Stress Level</h3>
-                <p className="text-sm text-gray-600">This week</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-1 text-emerald-600">
-              <TrendingDown className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                -{data.weeklyStats.stressReduction}%
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-3xl font-bold text-gray-900">
-              {data.weeklyStats.averageStress}
-            </span>
-            <div className="flex space-x-1">
-              {[1, 2, 3, 4, 5].map((level) => (
-                <div
-                  key={level}
-                  className={`w-2 h-6 rounded-full ${
-                    level <= data.weeklyStats.averageStress
-                      ? "bg-orange-400"
-                      : "bg-gray-200"
-                  }`}
-                />
-              ))}
-            </div>
-          </div> */}
-          <StressCard />
-        </div>
+
+        <StressCard />
 
         {/* Energy Card */}
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
@@ -252,81 +230,13 @@ export const DashboardMain = ({ data }) => {
       {/* Mood + Stress Factors */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Mood Trends */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          {/* <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-gray-900">Mood Trends</h3>
-            <Calendar className="w-5 h-5 text-gray-400" />
-          </div>
-          <div className="space-y-4">
-            {recentMoodData.map((day, index) => (
-              <div key={index} className="flex items-center space-x-4">
-                <div className="w-16 text-sm text-gray-600">
-                  {new Date(day.date).toLocaleDateString("en-US", {
-                    weekday: "short",
-                  })}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <span className="text-sm font-medium text-gray-700">
-                      Mood
-                    </span>
-                    <span className="text-lg">{getMoodEmoji(day.mood)}</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-gradient-to-r from-rose-400 to-pink-500 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(day.mood / 5) * 100}%` }}
-                    />
-                  </div>
-                </div>
-                <div className="text-sm font-medium text-gray-900">
-                  {day.mood}/5
-                </div>
-              </div>
-            ))}
-          </div> */}
-          <MoodGraph />
-        </div>
+
+        <MoodGraph />
 
         {/* Stress Factors */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          {/* <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-gray-900">
-              Stress Factors
-            </h3>
-            <Activity className="w-5 h-5 text-gray-400" />
-          </div>
-          <div className="space-y-4">
-            {data.stressFactors.map((factor, index) => (
-              <div key={index} className="flex items-center space-x-4">
-                <div className="w-20 text-sm text-gray-600">
-                  {factor.factor}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-gray-700">
-                      Level {factor.level}
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      {factor.percentage}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className={`h-2 rounded-full transition-all duration-500 ${getStressColor(
-                        factor.level
-                      )}`}
-                      style={{ width: `${factor.percentage}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div> */}
-          <StressGraph />
-        </div>
-      </div>
 
+        <StressGraph />
+      </div>
       {/* AI Tip of the Day */}
       <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100">
         <div className="flex items-center justify-between mb-4">
@@ -363,9 +273,7 @@ export const DashboardMain = ({ data }) => {
       {/* Quick Habits */}
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-gray-900">
-            Latest Habits
-          </h3>
+          <h3 className="text-xl font-semibold text-gray-900">Latest Habits</h3>
         </div>
 
         {loadingHabits ? (
@@ -395,10 +303,38 @@ export const DashboardMain = ({ data }) => {
           </div>
         )}
       </div>
+      {/* PDF Mental Health Journal Section */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 max-w-md mx-auto mt-6">
+        <h3 className="text-xl font-semibold text-gray-900 mb-4">
+          Export Mental Health Journal
+        </h3>
+        <div className="flex space-x-4">
+          <button
+            onClick={generatePDF}
+            disabled={pdfLoading}
+            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded transition disabled:opacity-50"
+          >
+            {pdfLoading ? "Generating PDF..." : "Generate PDF"}
+          </button>
+          <button
+            onClick={downloadPDF}
+            disabled={!pdfBlob}
+            className={`flex-1 ${
+              pdfBlob
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-gray-300 cursor-not-allowed"
+            } text-white font-semibold py-2 rounded transition`}
+          >
+            Download PDF
+          </button>
+        </div>
+      </div>
+
+      {/* Breathing exercise modal */}
       <div>
         {showBreathing && (
-        <TwoMinBreathing onClose={() => setShowBreathing(false)} />
-      )}
+          <TwoMinBreathing onClose={() => setShowBreathing(false)} />
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,5 @@
 flask 
 flask-cors 
-deepface 
-pillow 
+deepface  
 numpy
-openai
 load_dotenv

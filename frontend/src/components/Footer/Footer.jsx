@@ -13,7 +13,7 @@ const Footer = () => {
               <span className="text-2xl font-bold">Tranquilify</span>
             </div>
             <p className="text-gray-400 max-w-sm">
-              Your personal wellness companion for tracking moods, building habits, and creating a more balanced life.
+              Your trusted companion for holistic wellness — track your health & mind insights, and embrace a balanced lifestyle.
             </p>
             <div className="text-sm text-gray-500">
               © 2024 Tranquilify. All rights reserved.
@@ -54,15 +54,18 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Optional: Social or Newsletter */}
+          {/* Newsletter Subscription */}
           <div className="hidden lg:block">
             <h3 className="text-lg font-semibold mb-4">Stay Connected</h3>
-            <p className="text-gray-400 mb-2">Subscribe to our newsletter for updates.</p>
+            <p className="text-gray-400 mb-2">
+              Join our newsletter to receive the latest wellness tips and product updates.
+            </p>
             <form className="flex flex-col sm:flex-row items-center gap-2" onSubmit={(e) => e.preventDefault()}>
               <input
                 type="email"
                 placeholder="Email address"
                 className="w-full px-3 py-2 rounded bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Email address"
               />
               <button
                 type="submit"

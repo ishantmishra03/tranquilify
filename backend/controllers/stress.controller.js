@@ -51,8 +51,14 @@ export const getUserStressFactors = async (req, res) => {
   try {
     const userId = req.userId;
 
+     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+
     // Find all assessments for this user
-    const assessments = await StressAssessment.find({ user: userId });
+     const assessments = await StressAssessment.find({
+      user: userId,
+      createdAt: { $gte: sevenDaysAgo },
+    });
 
     if (assessments.length === 0) {
       return res.json({ success: true, factors: [] });

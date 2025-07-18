@@ -16,7 +16,7 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export const StressGraph = () => {
+export const StressGraphPage = () => {
   const [factors, setFactors] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -41,8 +41,8 @@ export const StressGraph = () => {
     fetchStressFactors();
   }, []);
 
-  if (loading) return <p>Loading stress data...</p>;
-  if (!factors.length) return <p>No stress factors found.</p>;
+  if (loading) return <p className="text-center mt-10 text-gray-500">Loading stress data...</p>;
+  if (!factors.length) return <p className="text-center mt-10 text-gray-500">No stress factors found.</p>;
 
   const labels = factors.map(f => f.factor);
   const stressLevels = factors.map(f => f.level);
@@ -93,26 +93,35 @@ export const StressGraph = () => {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Stress Factors - Average Levels',
-        font: { size: 16, weight: '600' },
-        padding: { top: 10, bottom: 10 },
+        text: 'Detailed Stress Level Analysis',
+        font: { size: 20, weight: 'bold' },
+        padding: { top: 15, bottom: 20 },
       },
     },
   };
 
   return (
-    <div
-      onClick={() => navigate('/stress-graph')}
-      className="cursor-pointer hover:shadow-lg transition-all bg-white p-4 sm:p-6 rounded-xl shadow-md border border-gray-200"
-    >
-      <div className="w-full overflow-x-auto">
-        <div className="min-w-[300px] sm:min-w-0 h-[250px] sm:h-[300px] relative">
+    <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-8 sm:py-8 flex flex-col">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="self-start text-sm sm:text-base px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium rounded-md shadow-sm transition mb-4"
+      >
+        ← Back
+      </button>
+
+      {/* Graph Card */}
+      <div className="flex-1 bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6">
+        <div className="h-[400px] sm:h-[550px]">
           <Line data={data} options={options} />
         </div>
-      </div>
-      <div className="mt-4 text-center text-gray-700 font-semibold text-sm sm:text-base">
-        Highest Stress Factor:{' '}
-        <span className="text-indigo-600">{maxStressFactor.factor}</span> (Level {maxStressFactor.level})
+        <div className="mt-6 text-center text-base sm:text-lg text-gray-700 font-medium">
+          Highest Stress Factor:{' '}
+          <span className="text-indigo-600 font-semibold">
+            {maxStressFactor.factor}
+          </span>{' '}
+          (Level {maxStressFactor.level})
+        </div>
       </div>
     </div>
   );

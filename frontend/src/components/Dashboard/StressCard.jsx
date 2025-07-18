@@ -2,15 +2,11 @@ import { useEffect, useState } from "react";
 import { Activity, TrendingDown } from "lucide-react";
 import axios from "../../config/axios";
 import { toast } from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext";
 
-const getStressColor = (level) => {
-  if (level >= 4) return "bg-red-500";
-  if (level >= 3) return "bg-orange-500";
-  if (level >= 2) return "bg-yellow-500";
-  return "bg-green-500";
-};
 
 export const StressCard = () => {
+  const { setAvgStressLevel } = useAppContext();
   const [averageStress, setAverageStress] = useState(null);
   const [stressReduction, setStressReduction] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -23,6 +19,7 @@ export const StressCard = () => {
           const levels = res.data.stressData.map((entry) => entry.stressLevel);
           const avg = levels.reduce((a, b) => a + b, 0) / levels.length;
           setAverageStress(avg.toFixed(1));
+          setAvgStressLevel(avg.toFixed(1));
 
           setStressReduction(10);
         } else {

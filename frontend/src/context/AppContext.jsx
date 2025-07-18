@@ -9,6 +9,9 @@ export const AppProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const [avgStressLevel, setAvgStressLevel] = useState(null);
+  const [avgMoodLevel, setAvgMoodLevel] = useState(null);
+
   const fetchUserData = async () => {
     try {
       const {data} = await axios.get('/api/user');
@@ -35,6 +38,8 @@ export const AppProvider = ({ children }) => {
         userData,
         isDarkMode,
         setIsDarkMode,
+        avgStressLevel, setAvgStressLevel,
+        avgMoodLevel, setAvgMoodLevel,
       }}
     >
       {children}

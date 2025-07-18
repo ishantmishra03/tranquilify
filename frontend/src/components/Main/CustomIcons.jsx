@@ -23,6 +23,36 @@ export const HabitIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
+export const TherapistIcon = ({ className = "w-8 h-8" }) => (
+  <svg
+    className={className}
+    viewBox="0 0 64 64"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Head */}
+    <circle cx="32" cy="20" r="12" fill="#FAF5FF" stroke="#8B5CF6" strokeWidth="2" />
+    {/* Shoulders */}
+    <path
+      d="M16 48c0-8 16-12 16-12s16 4 16 12v4H16v-4z"
+      fill="#EDE9FE"
+      stroke="#8B5CF6"
+      strokeWidth="2"
+    />
+    {/* Face details */}
+    <circle cx="26" cy="18" r="2" fill="#8B5CF6" />
+    <circle cx="38" cy="18" r="2" fill="#8B5CF6" />
+    <path
+      d="M24 26c4 4 8 4 12 0"
+      stroke="#8B5CF6"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+
 export const BreathingIcon = ({ className = "w-8 h-8" }) => (
   <svg className={className} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="32" cy="32" r="24" fill="#F0F9FF" stroke="#0EA5E9" strokeWidth="2"/>

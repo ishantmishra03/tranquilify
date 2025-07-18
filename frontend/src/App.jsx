@@ -1,18 +1,21 @@
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import {  useAppContext } from "./context/AppContext";
+import { useAppContext } from "./context/AppContext";
 import axios from "./config/axios";
 
 import Home from "./pages/Home";
 import { Auth } from "./pages/Auth/Auth";
-import {Dashboard} from "./pages/Dashboard/Dashboard";
+import { Dashboard } from "./pages/Dashboard/Dashboard";
 import Therapist from "./pages/Therapist/Therapist";
 import StressData from "./components/Dashboard/StressData";
 
-import ProtectedRoute from './config/ProtectedRoute';
+import {MoodGraphPage} from "./pages/Figure/MoodGraphPage";
+import { StressGraphPage } from "./pages/Figure/StressGraphPage";
+
+import ProtectedRoute from "./config/ProtectedRoute";
 
 const App = () => {
-  const {setIsAuthenticated, setLoading} = useAppContext();
+  const { setIsAuthenticated, setLoading } = useAppContext();
   const fetchUser = async () => {
     try {
       const { data } = await axios.get("/api/auth/isAuth");
@@ -35,21 +38,46 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard/>
-          </ProtectedRoute>
-        } />
-        <Route path="/therapist" element={
-          <ProtectedRoute>
-            <Therapist/>
-          </ProtectedRoute>
-        } />
-        <Route path="/stress-data" element={
-          <ProtectedRoute>
-            <StressData/>
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/therapist"
+          element={
+            <ProtectedRoute>
+              <Therapist />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/stress-data"
+          element={
+            <ProtectedRoute>
+              <StressData />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mood-graph"
+          element={
+            <ProtectedRoute>
+              <MoodGraphPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/stress-graph"
+          element={
+            <ProtectedRoute>
+              <StressGraphPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </div>
   );

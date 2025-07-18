@@ -9,20 +9,24 @@ const isToday = (someDate) => {
 };
 
 // Calculate streak of consecutive days from sorted completion dates (descending)
-const calculateStreak = (dates) => {
-  if (!dates.length) return 0;
+const calculateStreak = (completionDates) => {
+  if (!completionDates.length) return 0;
 
-  // Sort descending
-  dates.sort((a, b) => b - a);
+  // Convert all dates to just YYYY-MM-DD string for comparison
+  const dateSet = new Set(completionDates.map(date => new Date(date).toDateString()));
 
-  let streak = 1;
-  for (let i = 1; i < dates.length; i++) {
-    const diffDays = Math.floor((dates[i - 1] - dates[i]) / (1000 * 60 * 60 * 24));
-    if (diffDays === 1) streak++;
-    else break;
+  let streak = 0;
+  let day = new Date(); // today
+
+  // Check today, yesterday, day before, ...
+  while (dateSet.has(day.toDateString())) {
+    streak++;
+    day.setDate(day.getDate() - 1); // move to previous day
   }
+
   return streak;
 };
+
 
 // Get all habits for the logged-in user
 export const getUserHabits = async (req, res) => {

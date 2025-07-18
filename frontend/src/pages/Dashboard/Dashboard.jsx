@@ -13,15 +13,18 @@ import {
   Award,
   Activity,
   Bot,
+  Waves ,
 } from "lucide-react";
 import { DashboardMain } from "../../components/Dashboard/DashboardMain";
 import MoodCheck from "../../components/Dashboard/MoodCheck";
 import { StressForm } from "../../components/Dashboard/StressForm";
 import { HabitsPage } from "../../components/Dashboard/HabitsPage";
+import Soundscape from "../../components/Dashboard/Soundscape";
 import Logo from "../../components/Favicon/Logo";
 
+
 export const Dashboard = () => {
-  const { userData, setIsAuthenticated } = useAppContext();
+  const { userData, setIsAuthenticated, avgStressLevel, avgMoodLevel } = useAppContext();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState(null);
@@ -69,6 +72,7 @@ export const Dashboard = () => {
     { id: "stress-form", label: "Stress Form", icon: Activity },
     { id: "habits", label: "Habits", icon: Target },
     {id: "therapist", label : "Therapist" , icon: Bot},
+    {id: "soundscape", label : "Soundscape" , icon: Waves  },
   ];
 
   const handleLogout = async () => {
@@ -95,6 +99,8 @@ export const Dashboard = () => {
         return <StressForm />;
       case "habits":
         return <HabitsPage />;
+      case "soundscape":
+        return <Soundscape mood={avgMoodLevel} stressLevel={avgStressLevel}/>;
       case "therapist":
         return <Navigate to="/therapist" replace="true" />
       default:
@@ -148,10 +154,7 @@ export const Dashboard = () => {
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold">
-                {userData.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
+               {userData?.name?.split(" ").map((n) => n[0]).join("") || ""}
               </div>
               <div>
                 <div className="font-semibold text-gray-900">
@@ -235,10 +238,7 @@ export const Dashboard = () => {
                 </span>
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                {userData.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
+                {userData?.name?.split(" ").map((n) => n[0]).join("") || ""}
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Heart, TrendingUp } from "lucide-react";
 import axios from "../../config/axios";
 import { toast } from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext";
 
 const moodMap = {
   "Very Sad": 1,
@@ -20,6 +21,7 @@ const getMoodEmoji = (mood) => {
 };
 
 export const MoodCard = () => {
+  const { setAvgMoodLevel } = useAppContext();
   const [averageMood, setAverageMood] = useState(0);
   const [moodImprovement, setMoodImprovement] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -37,7 +39,7 @@ export const MoodCard = () => {
           });
           const avg = moods.reduce((a, b) => a + b, 0) / moods.length;
           setAverageMood(avg.toFixed(1));
-
+          setAvgMoodLevel(avg.toFixed(1));
           // Calculate or fetch real improvement here
           setMoodImprovement(8);
         } else {

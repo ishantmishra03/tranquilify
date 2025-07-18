@@ -1,34 +1,35 @@
 import React from "react";
-import { HabitIcon, BreathingIcon, JournalIcon, MoodIcon } from "./CustomIcons";
+import { HabitIcon, JournalIcon, MoodIcon, TherapistIcon } from "./CustomIcons";
 import { ScrollReveal } from "./ScrollReveal";
 
 const Features = () => {
   const features = [
     {
       icon: <MoodIcon className="w-12 h-12" />,
-      title: "Mood Tracking",
+      title: "Wellness Tracking",
       description:
-        "Log your emotions with intuitive emojis and discover patterns in your mental wellness journey.",
+        "Monitor your overall well-being with comprehensive insights that encompass emotional, physical, and mental health.",
     },
     {
       icon: <HabitIcon className="w-12 h-12" />,
-      title: "Habit Streaks",
+      title: "Goal Setting & Progress",
       description:
-        "Build positive habits with visual progress tracking and personalized insights to keep you motivated.",
+        "Set meaningful personal goals and track your progress with clear milestones to inspire continuous growth.",
     },
     {
-      icon: <BreathingIcon className="w-12 h-12" />,
-      title: "Breathing Exercises",
+      icon: <TherapistIcon className="w-12 h-12" />,
+      title: "AI Therapist",
       description:
-        "Guided breathing sessions designed to reduce stress and bring calm to your busy day.",
+        "Engage in confidential, compassionate conversations with an AI designed to support your emotional well-being.",
     },
     {
       icon: <JournalIcon className="w-12 h-12" />,
       title: "Smart Journal",
       description:
-        "Reflect on your thoughts with AI-powered sentiment analysis that helps you understand your emotional patterns.",
+        "Reflect deeply with AI-powered sentiment analysis that helps uncover patterns in your thoughts and feelings.",
     },
   ];
+
   return (
     <div>
       {/* Features Section */}
@@ -43,8 +44,7 @@ const Features = () => {
               </span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              Discover tools designed to help you understand yourself better and
-              build lasting positive habits.
+              Explore thoughtfully designed tools that empower you to understand yourself better and foster lasting positive habits.
             </p>
           </ScrollReveal>
 
