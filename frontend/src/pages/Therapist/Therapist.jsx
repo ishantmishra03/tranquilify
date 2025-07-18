@@ -10,9 +10,12 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../../context/AppContext";
 
 export default function Therapist() {
   const navigate = useNavigate();
+  const { isDarkMode } = useAppContext();
+
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -122,16 +125,28 @@ export default function Therapist() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50 font-['Inter'] flex flex-col">
+    <div
+      className={`h-screen font-['Inter'] flex flex-col ${
+        isDarkMode
+          ? "bg-slate-900 text-gray-100"
+          : "bg-gradient-to-br from-blue-50 via-white to-emerald-50 text-gray-900"
+      }`}
+    >
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-lg border-b border-gray-100 p-4 flex-shrink-0">
+      <div
+        className={`backdrop-blur-lg border-b p-4 flex-shrink-0 ${
+          isDarkMode
+            ? "bg-slate-800 border-slate-700"
+            : "bg-white/80 border-gray-100"
+        }`}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gradient-to-br from-sky-500 to-emerald-500 rounded-full flex items-center justify-center">
               <Brain className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 text-lg">
+              <h3 className="font-semibold text-lg">
                 AI Wellness Companion
               </h3>
               <div className="flex items-center space-x-2">
@@ -142,34 +157,48 @@ export default function Therapist() {
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <button
-            onClick={() => navigate('/dashboard')}
-            className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 text-white font-semibold text-sm shadow-md hover:from-sky-600 hover:to-emerald-600 transition-all duration-200"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </button>
+              onClick={() => navigate("/dashboard")}
+              className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 text-white font-semibold text-sm shadow-md hover:from-sky-600 hover:to-emerald-600 transition-all duration-200"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </button>
             <button
               onClick={startNewSession}
-              className="p-2 hover:bg-gray-100 rounded-lg group transition-all"
+              className={`p-2 rounded-lg group transition-all ${
+                isDarkMode ? "hover:bg-slate-700" : "hover:bg-gray-100"
+              }`}
             >
-              <RefreshCw className="w-5 h-5 text-gray-600 group-hover:text-sky-600" />
+              <RefreshCw
+                className={`w-5 h-5 ${
+                  isDarkMode
+                    ? "text-gray-300 group-hover:text-sky-400"
+                    : "text-gray-600 group-hover:text-sky-600"
+                }`}
+              />
             </button>
           </div>
         </div>
       </div>
 
       {/* Privacy Notice */}
-      <div className="bg-gradient-to-r from-sky-50 to-emerald-50 border-b border-sky-100 p-4 text-sm flex items-center justify-center space-x-2 text-sky-700">
+      <div
+        className={`border-b p-4 text-sm flex items-center justify-center space-x-2 ${
+          isDarkMode
+            ? "bg-slate-800 border-slate-700 text-sky-300"
+            : "bg-gradient-to-r from-sky-50 to-emerald-50 border-sky-100 text-sky-700"
+        }`}
+      >
         <Shield className="w-4 h-4 text-sky-600" />
         <span className="font-medium">Private & Temporary:</span>
         <span>This conversation is not stored</span>
         <Clock className="w-4 h-4 text-sky-600 ml-2" />
       </div>
 
-      {/* Chat Messages */}
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((m) => (
           <div
@@ -182,23 +211,24 @@ export default function Therapist() {
                   <div className="w-6 h-6 bg-gradient-to-br from-sky-500 to-emerald-500 rounded-full flex items-center justify-center">
                     <Brain className="w-3 h-3 text-white" />
                   </div>
-                  <span className="text-xs text-gray-600 font-medium">AI</span>
+                  <span className="text-xs font-medium text-gray-500">AI</span>
                 </div>
               )}
               <div
                 className={`px-4 py-3 rounded-2xl ${
                   m.isUser
                     ? "bg-gradient-to-r from-sky-500 to-emerald-500 text-white shadow-lg"
+                    : isDarkMode
+                    ? "bg-slate-800 text-gray-100 border border-slate-600"
                     : "bg-white text-gray-900 shadow-sm border border-gray-100"
                 }`}
               >
-                <div className="prose prose-sm max-w-none text-sm text-gray-800 leading-relaxed">
+                <div className="prose prose-sm max-w-none text-sm leading-relaxed">
                   <ReactMarkdown>{m.content}</ReactMarkdown>
                 </div>
-
                 <p
                   className={`text-xs mt-2 ${
-                    m.isUser ? "text-sky-100" : "text-gray-500"
+                    m.isUser ? "text-sky-100" : "text-gray-400"
                   }`}
                 >
                   {formatTime(m.timestamp)}
@@ -215,11 +245,17 @@ export default function Therapist() {
                 <div className="w-6 h-6 bg-gradient-to-br from-sky-500 to-emerald-500 rounded-full flex items-center justify-center">
                   <Brain className="w-3 h-3 text-white" />
                 </div>
-                <span className="text-xs text-gray-600 font-medium">
+                <span className="text-xs text-gray-500 font-medium">
                   AI is typing...
                 </span>
               </div>
-              <div className="bg-white border border-gray-100 px-4 py-3 rounded-2xl flex space-x-1">
+              <div
+                className={`px-4 py-3 rounded-2xl flex space-x-1 ${
+                  isDarkMode
+                    ? "bg-slate-800 border border-slate-600"
+                    : "bg-white border border-gray-100"
+                }`}
+              >
                 <div className="w-2 h-2 bg-sky-400 rounded-full animate-bounce" />
                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce delay-75" />
                 <div className="w-2 h-2 bg-sky-400 rounded-full animate-bounce delay-150" />
@@ -227,24 +263,31 @@ export default function Therapist() {
             </div>
           </div>
         )}
-
         <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-100 p-4">
+      <div
+        className={`p-4 border-t ${
+          isDarkMode
+            ? "bg-slate-900 border-slate-700"
+            : "bg-white border-gray-100"
+        }`}
+      >
         <div className="flex items-center space-x-3">
-          <div className="flex-1 relative">
-            <input
-              type="text"
-              value={currentMessage}
-              onChange={(e) => setCurrentMessage(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Share what's on your mind... (temporary & private)"
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none transition-all duration-200"
-              disabled={isTyping}
-            />
-          </div>
+          <input
+            type="text"
+            value={currentMessage}
+            onChange={(e) => setCurrentMessage(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            placeholder="Share what's on your mind... (temporary & private)"
+            className={`w-full px-4 py-3 rounded-xl transition-all duration-200 focus:outline-none ${
+              isDarkMode
+                ? "bg-slate-800 border border-slate-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-sky-500"
+                : "bg-white border border-gray-300 text-gray-900 focus:ring-2 focus:ring-sky-500"
+            }`}
+            disabled={isTyping}
+          />
           <button
             onClick={sendMessage}
             disabled={!currentMessage.trim() || isTyping}
@@ -254,12 +297,9 @@ export default function Therapist() {
           </button>
         </div>
 
-        {/* Error */}
         {error && (
           <p className="text-sm text-red-500 text-center mt-2">⚠️ {error}</p>
         )}
-
-        
       </div>
     </div>
   );

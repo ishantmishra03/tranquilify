@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Play, Pause, Music2, Volume2 } from "lucide-react";
+import { useAppContext } from "../../context/AppContext"; // ✅ Import
 
 const cdnUrl = import.meta.env.VITE_CDN_URL;
 
@@ -72,8 +73,6 @@ const tracks = [
   },
 ];
 
-
-
 const formatTime = (sec) => {
   if (isNaN(sec)) return "0:00";
   const minutes = Math.floor(sec / 60);
@@ -82,10 +81,13 @@ const formatTime = (sec) => {
 };
 
 const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
-  // Determine suggested track by mood & stressLevel
+  const { isDarkMode } = useAppContext(); // ✅ Access dark mode
+
   const getSuggestedTrack = () => {
-    if (stressLevel >= 3 || mood <= 2) return tracks.find((t) => t.id === "calm");
-    else if (stressLevel === 2 || mood === 3) return tracks.find((t) => t.id === "focus");
+    if (stressLevel >= 3 || mood <= 2)
+      return tracks.find((t) => t.id === "calm");
+    else if (stressLevel === 2 || mood === 3)
+      return tracks.find((t) => t.id === "focus");
     else return tracks.find((t) => t.id === "uplift");
   };
 
@@ -99,7 +101,6 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
 
   const audioRef = useRef(null);
 
-  // Play new selected track
   const playTrack = (track) => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -127,7 +128,8 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
       setDuration(0);
     });
 
-    audio.play()
+    audio
+      .play()
       .then(() => {
         audioRef.current = audio;
         setPlaying(true);
@@ -136,7 +138,6 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
       .catch(console.error);
   };
 
-  // Toggle play/pause on main card
   const togglePlayPause = () => {
     if (!audioRef.current) {
       playTrack(currentTrack);
@@ -151,25 +152,20 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
     }
   };
 
-  // Click handler for any card: play & bring to main
   const onCardClick = (track) => {
     if (currentTrack.id === track.id) {
-      // toggle play if same track
       togglePlayPause();
     } else {
-      // switch to new track
       playTrack(track);
     }
   };
 
-  // Volume control handler
   const handleVolumeChange = (e) => {
     const vol = parseFloat(e.target.value);
     setVolume(vol);
     if (audioRef.current) audioRef.current.volume = vol;
   };
 
-  // Seek bar handler
   const handleSeekChange = (e) => {
     const time = parseFloat(e.target.value);
     if (audioRef.current) {
@@ -178,7 +174,6 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
     }
   };
 
-  // On component unmount, cleanup audio
   useEffect(() => {
     return () => {
       if (audioRef.current) {
@@ -189,10 +184,13 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-10 text-gray-900">
+    <div
+      className={`max-w-5xl mx-auto p-6 space-y-10 ${
+        isDarkMode ? "text-white" : "text-gray-900"
+      }`}
+    >
       {/* MAIN TRACK CARD */}
       <div className="relative bg-gradient-to-r from-green-600 to-blue-600 rounded-3xl p-8 shadow-xl text-white flex flex-col sm:flex-row items-center sm:items-start space-y-6 sm:space-y-0 sm:space-x-8">
-        {/* Suggested badge */}
         {currentTrack.id === suggestedTrack.id && (
           <div className="absolute top-4 left-4 bg-green-200 text-green-900 font-semibold text-xs uppercase px-3 py-1 rounded-full shadow-md select-none">
             Suggested
@@ -207,7 +205,6 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
           <h2 className="text-4xl font-bold truncate">{currentTrack.name}</h2>
           <p className="mt-3 text-lg">{currentTrack.description}</p>
 
-          {/* Progress bar */}
           <input
             type="range"
             min={0}
@@ -216,14 +213,12 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
             value={currentTrack && playing ? currentTime : 0}
             onChange={handleSeekChange}
             className="w-full mt-6 rounded-lg cursor-pointer accent-green-300"
-            aria-label="Seek audio"
           />
           <div className="flex justify-between text-sm font-mono mt-1 select-none">
             <span>{formatTime(currentTrack && playing ? currentTime : 0)}</span>
             <span>{formatTime(duration)}</span>
           </div>
 
-          {/* Volume control */}
           <div className="flex items-center space-x-4 mt-5 max-w-xs">
             <Volume2 className="w-7 h-7 text-green-300" />
             <input
@@ -233,16 +228,13 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
               step={0.01}
               value={volume}
               onChange={handleVolumeChange}
-              aria-label="Volume control"
               className="w-full cursor-pointer accent-green-400"
             />
           </div>
         </div>
 
-        {/* Play/pause button */}
         <button
           onClick={togglePlayPause}
-          aria-label={playing ? "Pause" : "Play"}
           className="bg-white bg-opacity-40 hover:bg-opacity-60 p-6 rounded-full transition flex items-center justify-center shadow-lg flex-shrink-0"
         >
           {playing ? (
@@ -253,7 +245,7 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
         </button>
       </div>
 
-      {/* OTHER TRACKS GRID */}
+      {/* OTHER TRACKS */}
       <div>
         <h3 className="text-2xl font-semibold mb-6">Other Soundscapes</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -272,17 +264,29 @@ const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
                       onCardClick(track);
                     }
                   }}
-                  className="cursor-pointer bg-white rounded-2xl shadow-md p-5 border border-gray-200 flex flex-col hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+                  className={`cursor-pointer rounded-2xl p-5 border flex flex-col transition shadow-md focus:outline-none focus:ring-2 focus:ring-green-400 hover:shadow-lg ${
+                    isDarkMode
+                      ? "bg-gray-900 text-white border-gray-700"
+                      : "bg-white text-gray-900 border-gray-200"
+                  }`}
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold text-lg truncate">{track.name}</h4>
+                    <h4 className="font-semibold text-lg truncate">
+                      {track.name}
+                    </h4>
                     {isSuggested && (
                       <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-semibold select-none">
                         Suggested
                       </span>
                     )}
                   </div>
-                  <p className="text-gray-600 flex-grow mb-4">{track.description}</p>
+                  <p
+                    className={`mb-4 flex-grow ${
+                      isDarkMode ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
+                    {track.description}
+                  </p>
                   <button
                     className="self-start bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition flex items-center justify-center"
                     aria-label="Play track"

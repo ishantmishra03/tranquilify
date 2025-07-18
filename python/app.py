@@ -10,14 +10,14 @@ from dotenv import load_dotenv
 import os
 import time
 
-# Load environment variables from .env file
+
 load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 app = Flask(__name__)
 CORS(app)
 
-# In-memory rate limit tracker: {ip_address: {route: last_timestamp}}
+#Format : {ip_address: {route: last_timestamp}}
 rate_limit = {}
 RATE_LIMIT_SECONDS = 300  # 5 minutes
 

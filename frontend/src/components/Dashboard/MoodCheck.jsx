@@ -1,16 +1,18 @@
 import React, { useRef, useState } from 'react';
 import axios from '../../config/axios';
-import api from 'axios';
 import { Smile, Camera, RefreshCcw, Loader2, Check, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useAppContext } from '../../context/AppContext'; 
 
 const MoodCheck = () => {
+  const { isDarkMode } = useAppContext();
+
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
   const [mood, setMood] = useState(null);
-  const [pendingMood, setPendingMood] = useState(null); 
-  const [mode, setMode] = useState(''); 
+  const [pendingMood, setPendingMood] = useState(null);
+  const [mode, setMode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -56,12 +58,12 @@ const MoodCheck = () => {
     const dataURL = canvas.toDataURL('image/jpeg');
 
     try {
-      const { data } = await api.post(`${import.meta.env.VITE_BACKEND2_URL}/analyze`, {
+      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND2_URL}/analyze`, {
         image: dataURL,
       });
 
       if (data.success) {
-        setPendingMood(data.emotion); // ask before saving
+        setPendingMood(data.emotion);
       } else {
         setError('Failed to detect mood.');
       }
@@ -101,17 +103,22 @@ const MoodCheck = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-2xl mx-auto space-y-6">
+    <div className={`rounded-xl shadow-lg p-6 w-full max-w-2xl mx-auto space-y-6
+      ${isDarkMode ? 'bg-gray-900 text-gray-200' : 'bg-white text-gray-800'}`}>
+      
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold text-gray-800 flex items-center space-x-2">
-          <Smile className="w-5 h-5 text-orange-500" />
+        <h2 className="text-xl font-bold flex items-center space-x-2">
+          <Smile className={`${isDarkMode ? 'text-orange-400' : 'text-orange-500'} w-5 h-5`} />
           <span>Mood Check</span>
         </h2>
 
         {mode && (
           <button
             onClick={() => handleSwitchMode(mode === 'manual' ? 'auto' : 'manual')}
-            className="flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 text-sm rounded-md hover:bg-indigo-200"
+            className={`flex items-center px-3 py-1.5 text-sm rounded-md hover:bg-indigo-300/30
+              ${isDarkMode
+                ? 'bg-indigo-800 text-indigo-300 hover:bg-indigo-700'
+                : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'}`}
           >
             <RefreshCcw className="w-4 h-4 mr-1" />
             Switch to {mode === 'manual' ? 'Auto' : 'Manual'}
@@ -123,14 +130,20 @@ const MoodCheck = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
             onClick={() => handleSwitchMode('manual')}
-            className="w-full flex items-center justify-center p-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold rounded-lg transition"
+            className={`w-full flex items-center justify-center p-4 font-semibold rounded-lg transition
+              ${isDarkMode
+                ? 'bg-yellow-700 text-yellow-200 hover:bg-yellow-600'
+                : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'}`}
           >
             <Smile className="w-5 h-5 mr-2" />
             Select Mood Manually
           </button>
           <button
             onClick={() => handleSwitchMode('auto')}
-            className="w-full flex items-center justify-center p-4 bg-green-100 hover:bg-green-200 text-green-800 font-semibold rounded-lg transition"
+            className={`w-full flex items-center justify-center p-4 font-semibold rounded-lg transition
+              ${isDarkMode
+                ? 'bg-green-700 text-green-200 hover:bg-green-600'
+                : 'bg-green-100 text-green-800 hover:bg-green-200'}`}
           >
             <Camera className="w-5 h-5 mr-2" />
             Detect Mood Automatically
@@ -140,17 +153,24 @@ const MoodCheck = () => {
 
       {mode === 'manual' && (
         <div className="space-y-4">
-          <p className="text-sm text-gray-600">Tap a mood that best describes how you feel:</p>
+          <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            Tap a mood that best describes how you feel:
+          </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {manualMoods.map((m) => (
               <button
                 key={m}
                 onClick={() => handleManualMoodSelect(m)}
-                className={`p-3 text-sm font-medium rounded-lg border transition ${
-                  mood === m
-                    ? 'bg-blue-100 border-blue-500 text-blue-700'
-                    : 'bg-gray-50 hover:bg-gray-100 border-gray-300 text-gray-700'
-                }`}
+                className={`p-3 text-sm font-medium rounded-lg border transition
+                  ${
+                    mood === m
+                      ? isDarkMode
+                        ? 'bg-blue-600 border-blue-500 text-blue-100'
+                        : 'bg-blue-100 border-blue-500 text-blue-700'
+                      : isDarkMode
+                      ? 'bg-gray-800 hover:bg-gray-700 border-gray-700 text-gray-300'
+                      : 'bg-gray-50 hover:bg-gray-100 border-gray-300 text-gray-700'
+                  }`}
               >
                 {m}
               </button>
@@ -165,7 +185,8 @@ const MoodCheck = () => {
             ref={videoRef}
             width="100%"
             height="auto"
-            className="rounded-lg border w-full max-w-md mx-auto"
+            className={`rounded-lg border w-full max-w-md mx-auto
+              ${isDarkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-300'}`}
             autoPlay
             muted
           />
@@ -173,7 +194,10 @@ const MoodCheck = () => {
           <button
             onClick={captureAndDetectMood}
             disabled={loading}
-            className="w-full py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition disabled:opacity-50"
+            className={`w-full py-3 px-6 rounded-lg font-semibold transition disabled:opacity-50
+              ${isDarkMode
+                ? 'bg-purple-700 hover:bg-purple-800 text-white'
+                : 'bg-purple-600 hover:bg-purple-700 text-white'}`}
           >
             {loading ? (
               <span className="flex items-center justify-center space-x-2">
@@ -187,11 +211,11 @@ const MoodCheck = () => {
         </div>
       )}
 
-      {/* Ask to save mood */}
       {pendingMood && (
-        <div className="text-center space-y-3">
-          <div className="text-lg font-semibold text-gray-700">
-            Detected Mood: <span className="capitalize text-blue-600">{pendingMood}</span>
+        <div className={`text-center space-y-3
+          ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+          <div className="text-lg font-semibold">
+            Detected Mood: <span className="capitalize text-blue-500">{pendingMood}</span>
           </div>
           <div className="flex justify-center space-x-4">
             <button
@@ -213,7 +237,10 @@ const MoodCheck = () => {
       )}
 
       {error && (
-        <div className="text-center text-red-500 text-sm">{error}</div>
+        <div className={`text-center text-sm
+          ${isDarkMode ? 'text-red-400' : 'text-red-500'}`}>
+          {error}
+        </div>
       )}
     </div>
   );

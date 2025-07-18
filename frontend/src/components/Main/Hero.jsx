@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppContext } from '../../context/AppContext';
 
 const Hero = () => {
-  const { isAuthenticated } = useAppContext();
+  const { isAuthenticated, isDarkMode } = useAppContext();
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
@@ -39,7 +39,6 @@ const Hero = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Dynamic Background */}
       <div 
         className="absolute inset-0 opacity-30"
         style={{
@@ -51,7 +50,7 @@ const Hero = () => {
         }}
       />
 
-      {/* Animated Grid Pattern */}
+     
       <div className="absolute inset-0 opacity-5">
         <div 
           className="w-full h-full"
@@ -66,7 +65,7 @@ const Hero = () => {
         />
       </div>
 
-      {/* Floating Elements */}
+      
       <FloatingElement delay={0} duration={6} className="top-1/4 left-1/4">
         <div className="w-3 h-3 bg-sky-400 rounded-full blur-sm" />
       </FloatingElement>
@@ -80,7 +79,7 @@ const Hero = () => {
         <div className="w-2.5 h-2.5 bg-teal-400 rounded-full blur-sm" />
       </FloatingElement>
 
-      {/* Main Content */}
+      
       <section className="relative pt-20 pb-32 px-4 sm:px-6 lg:px-8 flex items-center min-h-screen">
         <div className="max-w-7xl mx-auto w-full">
           <div
@@ -88,7 +87,7 @@ const Hero = () => {
               isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
             }`}
           >
-            {/* Animated Icon */}
+            
             <ScrollReveal direction="fade" delay={200}>
               <div className="relative mb-8">
                 <div className="text-7xl md:text-8xl mb-6 relative inline-block group cursor-pointer">
@@ -98,10 +97,12 @@ const Hero = () => {
               </div>
             </ScrollReveal>
 
-            {/* Main Heading with Enhanced Typography */}
+            
             <ScrollReveal direction="up" delay={400}>
               <div className="relative mb-8">
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-gray-900 mb-6 leading-none tracking-tight">
+                <h1 className={`text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black mb-6 leading-none tracking-tight ${
+                  isDarkMode ? "text-white" : "text-gray-900"
+                }`}>
                   <span className="relative inline-block">
                     <span className="absolute inset-0 bg-gradient-to-r from-sky-600 via-cyan-500 to-emerald-600 bg-clip-text text-transparent blur-sm opacity-50" />
                     <span className="relative bg-gradient-to-r from-sky-600 via-cyan-500 to-emerald-600 bg-clip-text text-transparent animate-gradient-shift">
@@ -109,17 +110,18 @@ const Hero = () => {
                     </span>
                   </span>
                 </h1>
-                {/* Decorative Underline */}
                 <div className="flex justify-center">
                   <div className="w-24 h-1 bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full animate-pulse" />
                 </div>
               </div>
             </ScrollReveal>
 
-            {/* Subtitle with Enhanced Styling */}
+
             <ScrollReveal direction="up" delay={600}>
-              <p className="text-xl sm:text-2xl lg:text-3xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed font-light tracking-wide">
-                Monitor your health insights, manage stress, and build a{' '}
+              <p className={`text-xl sm:text-2xl lg:text-3xl mb-8 max-w-4xl mx-auto leading-relaxed font-light tracking-wide ${
+                isDarkMode ? "text-gray-300" : "text-gray-700"
+              }`}>
+                Monitor your health insights, manage stress, and build a{" "}
                 <span className="font-semibold bg-gradient-to-r from-sky-600 to-emerald-600 bg-clip-text text-transparent">
                   sustainable, healthier
                 </span>
@@ -127,18 +129,20 @@ const Hero = () => {
               </p>
             </ScrollReveal>
 
-            {/* Description */}
+            
             <ScrollReveal direction="up" delay={800}>
               <div className="relative max-w-3xl mx-auto mb-12">
-                <p className="text-gray-600 text-lg sm:text-xl leading-relaxed font-light">
-                  Tranquilify integrates emotional tracking, habit-building, stress insights, and AI-powered tools into one seamless experience—designed to support your mental wellness journey with{' '}
-                  <span className="text-sky-600 font-medium">clarity</span> and{' '}
+                <p className={`text-lg sm:text-xl leading-relaxed font-light ${
+                  isDarkMode ? "text-gray-400" : "text-gray-600"
+                }`}>
+                  Tranquilify integrates emotional tracking, habit-building, stress insights, and AI-powered tools into one seamless experience—designed to support your mental wellness journey with{" "}
+                  <span className="text-sky-600 font-medium">clarity</span> and{" "}
                   <span className="text-emerald-600 font-medium">care</span>.
                 </p>
               </div>
             </ScrollReveal>
 
-            {/* Enhanced CTA Buttons */}
+           
             <ScrollReveal direction="up" delay={1000}>
               <div className="flex flex-col sm:flex-row justify-center items-center space-y-6 sm:space-y-0 sm:space-x-8">
                 {!isAuthenticated ? (
@@ -172,11 +176,15 @@ const Hero = () => {
                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-sky-400 to-emerald-400 blur opacity-50 group-hover:opacity-75 transition-opacity duration-300 scale-105" />
                   </Link>
                 )}
-                
+
                 {!isAuthenticated && (
                   <button
                     onClick={() => navigate('/auth')}
-                    className="group relative bg-white/80 backdrop-blur-sm border-2 border-gray-200 text-gray-700 px-10 py-5 rounded-2xl text-lg font-semibold hover:border-sky-300 hover:bg-sky-50/50 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+                    className={`group relative backdrop-blur-sm border-2 px-10 py-5 rounded-2xl text-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                      isDarkMode
+                        ? "bg-white/10 border-gray-700 text-gray-200 hover:border-sky-600"
+                        : "bg-white/80 border-gray-200 text-gray-700 hover:border-sky-300 hover:bg-sky-50/50"
+                    }`}
                   >
                     <span className="relative z-10">Sign In to Continue</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-sky-50 to-emerald-50 opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-2xl" />
@@ -185,9 +193,11 @@ const Hero = () => {
               </div>
             </ScrollReveal>
 
-            {/* Trust Indicators */}
+           
             <ScrollReveal direction="up" delay={1200}>
-              <div className="mt-16 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8 text-sm text-gray-500">
+              <div className={`mt-16 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8 text-sm ${
+                isDarkMode ? "text-gray-400" : "text-gray-500"
+              }`}>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                   <span>Secure & Private</span>
@@ -206,27 +216,22 @@ const Hero = () => {
         </div>
       </section>
 
-      {/* CSS for custom animations */}
       <style jsx>{`
         @keyframes drift {
           0% { transform: translate(0, 0); }
           100% { transform: translate(-50px, -50px); }
         }
-        
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(-10px) rotate(5deg); }
         }
-        
         @keyframes gradient-shift {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
         }
-        
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
-        
         .animate-gradient-shift {
           background-size: 200% 200%;
           animation: gradient-shift 3s ease infinite;

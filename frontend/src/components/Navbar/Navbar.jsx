@@ -10,11 +10,14 @@ const Navbar = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";
   const navigate = useNavigate();
+
   const {
     isAuthenticated,
     setIsAuthenticated,
     isDarkMode,
+    setIsDarkMode,
   } = useAppContext();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -29,23 +32,24 @@ const Navbar = () => {
     }
   };
 
-
   return (
     <div>
       {/* Navigation */}
       <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b backdrop-blur-lg ${
-          isDarkMode ? "bg-gray-900/80 border-gray-700 text-white" : "bg-white/80 border-gray-100 text-gray-900"
+        className={`fixed top-0 left-0 w-full z-50 border-b backdrop-blur-lg ${
+          isDarkMode
+            ? "bg-gray-900/80 border-gray-700 text-white"
+            : "bg-white/80 border-gray-100 text-gray-900"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/">
               <div className="flex items-center space-x-2">
-                <div className="text-2xl"><Logo width="50" height="50"/></div>
-                <span className="text-xl font-semibold">
-                  Tranquilify
-                </span>
+                <div className="text-2xl">
+                  <Logo width="50" height="50" />
+                </div>
+                <span className="text-xl font-semibold">Tranquilify</span>
               </div>
             </Link>
 
@@ -74,8 +78,6 @@ const Navbar = () => {
                 </>
               )}
 
-              
-
               {isAuthenticated && (
                 <button
                   onClick={() => navigate("/dashboard")}
@@ -99,14 +101,25 @@ const Navbar = () => {
                   Try for Free
                 </Link>
               )}
+
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-2 rounded-full transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              >
+                {isDarkMode ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </button>
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden flex items-center space-x-2 ">
-              
+            <div className="md:hidden flex items-center space-x-2">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-black"
+                className={isDarkMode ? "text-white" : "text-black"}
               >
                 {isMenuOpen ? (
                   <X className="w-6 h-6" />
@@ -122,7 +135,9 @@ const Navbar = () => {
         {isMenuOpen && (
           <div
             className={`md:hidden ${
-              isDarkMode ? "bg-gray-900 text-white border-gray-700" : "bg-white text-gray-900 border-gray-100"
+              isDarkMode
+                ? "bg-gray-900 text-white border-gray-700"
+                : "bg-white text-gray-900 border-gray-100"
             } border-t animate-in slide-in-from-top duration-200`}
           >
             <div className="px-4 pt-2 pb-3 space-y-1">
@@ -131,7 +146,10 @@ const Navbar = () => {
                   <a href="#features" className="block px-3 py-2 hover:underline">
                     Features
                   </a>
-                  <a href="#testimonials" className="block px-3 py-2 hover:underline">
+                  <a
+                    href="#testimonials"
+                    className="block px-3 py-2 hover:underline"
+                  >
                     Reviews
                   </a>
                   <a href="#screenshots" className="block px-3 py-2 hover:underline">
@@ -139,6 +157,7 @@ const Navbar = () => {
                   </a>
                 </>
               )}
+
               {!isAuthenticated ? (
                 <button
                   onClick={() => navigate("/auth")}
@@ -154,6 +173,7 @@ const Navbar = () => {
                   Logout
                 </button>
               )}
+
               {!isAuthenticated ? (
                 <Link
                   to="/auth"
@@ -169,6 +189,20 @@ const Navbar = () => {
                   Dashboard
                 </button>
               )}
+
+              {/* Mobile Dark Mode Toggle */}
+              <div className="flex justify-center pt-2">
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-2 rounded-full transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                >
+                  {isDarkMode ? (
+                    <Sun className="w-5 h-5" />
+                  ) : (
+                    <Moon className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         )}

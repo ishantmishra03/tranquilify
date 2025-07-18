@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from '../../config/axios';
 import { toast } from 'react-hot-toast';
 import { Line } from 'react-chartjs-2';
+import { useAppContext } from '../../context/AppContext'; 
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,6 +21,7 @@ export const StressGraphPage = () => {
   const [factors, setFactors] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { isDarkMode } = useAppContext();
 
   useEffect(() => {
     const fetchStressFactors = async () => {
@@ -41,8 +43,17 @@ export const StressGraphPage = () => {
     fetchStressFactors();
   }, []);
 
-  if (loading) return <p className="text-center mt-10 text-gray-500">Loading stress data...</p>;
-  if (!factors.length) return <p className="text-center mt-10 text-gray-500">No stress factors found.</p>;
+  if (loading) return (
+    <p className={`text-center mt-10 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+      Loading stress data...
+    </p>
+  );
+
+  if (!factors.length) return (
+    <p className={`text-center mt-10 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+      No stress factors found.
+    </p>
+  );
 
   const labels = factors.map(f => f.factor);
   const stressLevels = factors.map(f => f.level);
@@ -61,7 +72,7 @@ export const StressGraphPage = () => {
         borderColor: 'rgba(99, 102, 241, 1)',
         backgroundColor: 'rgba(99, 102, 241, 0.2)',
         pointBorderColor: 'rgba(99, 102, 241, 1)',
-        pointBackgroundColor: 'white',
+        pointBackgroundColor: '#fff',
         tension: 0.3,
       },
     ],
@@ -74,18 +85,26 @@ export const StressGraphPage = () => {
       y: {
         beginAtZero: true,
         max: 4,
-        ticks: { stepSize: 1 },
+        ticks: {
+          stepSize: 1,
+          color: isDarkMode ? '#ccc' : '#333',
+        },
         title: {
           display: true,
           text: 'Stress Level',
           font: { size: 14, weight: 'bold' },
+          color: isDarkMode ? '#eee' : '#111',
         },
       },
       x: {
+        ticks: {
+          color: isDarkMode ? '#ccc' : '#333',
+        },
         title: {
           display: true,
           text: 'Stress Factors',
           font: { size: 14, weight: 'bold' },
+          color: isDarkMode ? '#eee' : '#111',
         },
       },
     },
@@ -95,29 +114,36 @@ export const StressGraphPage = () => {
         display: true,
         text: 'Detailed Stress Level Analysis',
         font: { size: 20, weight: 'bold' },
+        color: isDarkMode ? '#fff' : '#000',
         padding: { top: 15, bottom: 20 },
       },
     },
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-8 sm:py-8 flex flex-col">
-      {/* Back Button */}
+    <div className={`min-h-screen px-4 py-6 sm:px-8 sm:py-8 flex flex-col ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+     
       <button
         onClick={() => navigate(-1)}
-        className="self-start text-sm sm:text-base px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium rounded-md shadow-sm transition mb-4"
+        className={`self-start text-sm sm:text-base px-3 py-1.5 rounded-md shadow-sm transition mb-4 font-medium
+          ${isDarkMode
+            ? 'bg-indigo-900 hover:bg-indigo-800 text-indigo-200'
+            : 'bg-indigo-100 hover:bg-indigo-200 text-indigo-700'}`}
       >
         ← Back
       </button>
 
-      {/* Graph Card */}
-      <div className="flex-1 bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6">
+      
+      <div className={`flex-1 rounded-xl shadow-md p-4 sm:p-6 border
+        ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}
+      >
         <div className="h-[400px] sm:h-[550px]">
           <Line data={data} options={options} />
         </div>
-        <div className="mt-6 text-center text-base sm:text-lg text-gray-700 font-medium">
+        <div className={`mt-6 text-center text-base sm:text-lg font-medium
+          ${isDarkMode ? 'text-indigo-300' : 'text-gray-700'}`}>
           Highest Stress Factor:{' '}
-          <span className="text-indigo-600 font-semibold">
+          <span className="text-indigo-500 font-semibold">
             {maxStressFactor.factor}
           </span>{' '}
           (Level {maxStressFactor.level})

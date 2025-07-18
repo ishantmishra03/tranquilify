@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from '../../config/axios';
 import { Bar } from 'react-chartjs-2';
 import { toast } from 'react-hot-toast';
+import { useAppContext } from '../../context/AppContext'; 
 
 import {
   Chart as ChartJS,
@@ -20,6 +21,7 @@ export const MoodGraph = () => {
   const [moods, setMoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { isDarkMode } = useAppContext(); 
 
   useEffect(() => {
     const fetchMoodData = async () => {
@@ -40,12 +42,28 @@ export const MoodGraph = () => {
     fetchMoodData();
   }, []);
 
-  if (loading) return <p className="text-sm text-gray-500">Loading mood data...</p>;
-  if (!moods.length) return <p className="text-sm text-gray-500">No mood data found.</p>;
+  if (loading) {
+    return (
+      <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+        Loading mood data...
+      </p>
+    );
+  }
+
+  if (!moods.length) {
+    return (
+      <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+        No mood data found.
+      </p>
+    );
+  }
 
   const labels = moods.map(m => m.mood);
   const counts = moods.map(m => m.count);
-  const mostFrequentMood = moods.reduce((max, curr) => (curr.count > max.count ? curr : max), moods[0]);
+  const mostFrequentMood = moods.reduce(
+    (max, curr) => (curr.count > max.count ? curr : max),
+    moods[0]
+  );
 
   const data = {
     labels,
@@ -66,18 +84,21 @@ export const MoodGraph = () => {
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { stepSize: 1 },
+        ticks: { stepSize: 1, color: isDarkMode ? '#ccc' : '#444' },
         title: {
           display: true,
           text: 'Frequency',
           font: { size: 13, weight: 'bold' },
+          color: isDarkMode ? '#ccc' : '#222',
         },
       },
       x: {
+        ticks: { color: isDarkMode ? '#ccc' : '#444' },
         title: {
           display: true,
           text: 'Moods',
           font: { size: 13, weight: 'bold' },
+          color: isDarkMode ? '#ccc' : '#222',
         },
       },
     },
@@ -87,6 +108,7 @@ export const MoodGraph = () => {
         display: true,
         text: 'Mood Frequency Overview',
         font: { size: 16, weight: '600' },
+        color: isDarkMode ? '#fff' : '#000',
         padding: { top: 10, bottom: 10 },
       },
     },
@@ -95,14 +117,17 @@ export const MoodGraph = () => {
   return (
     <div
       onClick={() => navigate('/mood-graph')}
-      className="cursor-pointer hover:shadow-lg transition-all bg-white p-4 sm:p-6 rounded-xl shadow-md border border-gray-200 mx-auto w-full max-w-xl"
+      className={`cursor-pointer transition-all p-4 sm:p-6 rounded-xl mx-auto w-full max-w-xl 
+        ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white hover:shadow-emerald-600/10' : 'bg-white border-gray-200 text-gray-900 hover:shadow-lg'} 
+        border shadow-md`}
     >
       <div className="relative h-[260px] sm:h-[300px]">
         <Bar data={data} options={options} />
       </div>
-      <div className="mt-4 text-center text-sm sm:text-base text-gray-700 font-medium">
+      <div className={`mt-4 text-center text-sm sm:text-base font-medium 
+        ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
         Most Frequent Mood:{' '}
-        <span className="text-emerald-600 font-semibold">
+        <span className="text-emerald-500 font-semibold">
           {mostFrequentMood.mood}
         </span>{' '}
         ({mostFrequentMood.count} times)

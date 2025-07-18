@@ -2,20 +2,16 @@ import { useState, useEffect } from "react";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react";
 import { toast } from "react-hot-toast";
 import axios from "../../config/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
-import { Link } from "react-router-dom";
 import Logo from "../../components/Favicon/Logo";
 
 export const Auth = () => {
-  const { setIsAuthenticated, isAuthenticated } = useAppContext();
+  const { setIsAuthenticated, isAuthenticated, isDarkMode } = useAppContext();
   const navigate = useNavigate();
 
-  //Redirect if already loggeIn
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboard", { replace: true });
-    }
+    if (isAuthenticated) navigate("/dashboard", { replace: true });
   }, [isAuthenticated, navigate]);
 
   const [isLogin, setIsLogin] = useState(true);
@@ -30,40 +26,21 @@ export const Auth = () => {
   });
   const [errors, setErrors] = useState({});
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    return password.length >= 8;
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validatePassword = (password) => password.length >= 8;
 
   const validateForm = () => {
     const newErrors = {};
+    if (!formData.email) newErrors.email = "Email is required";
+    else if (!validateEmail(formData.email)) newErrors.email = "Enter a valid email";
 
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (!validatePassword(formData.password)) {
-      newErrors.password = "Password must be at least 8 characters long";
-    }
+    if (!formData.password) newErrors.password = "Password is required";
+    else if (!validatePassword(formData.password)) newErrors.password = "Password must be 8+ characters";
 
     if (!isLogin) {
-      if (!formData.name) {
-        newErrors.name = "Name is required";
-      }
-
-      if (!formData.confirmPassword) {
-        newErrors.confirmPassword = "Please confirm your password";
-      } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = "Passwords do not match";
-      }
+      if (!formData.name) newErrors.name = "Name is required";
+      if (!formData.confirmPassword) newErrors.confirmPassword = "Please confirm your password";
+      else if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -72,57 +49,29 @@ export const Auth = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: undefined,
-      }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
-      if (!validateForm()) return;
-
       setIsLoading(true);
-      if (isLogin) {
-        const { data } = await axios.post("/api/auth/login", {
-          email: formData.email,
-          password: formData.password,
-        });
+      const endpoint = isLogin ? "/api/auth/login" : "/api/auth/signup";
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
+        : { name: formData.name, email: formData.email, password: formData.password };
 
-        if (data.success) {
-          setIsAuthenticated(true);
-          toast.success(data.message);
-          navigate("/");
-        } else {
-          toast.error(data.message);
-        }
-      } else {
-        const { data } = await axios.post("/api/auth/signup", {
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        });
-
-        if (data.success) {
-          setIsAuthenticated(true);
-          toast.success(data.message);
-          navigate("/");
-        } else {
-          toast.error(data.message);
-        }
-      }
+      const { data } = await axios.post(endpoint, payload);
+      if (data.success) {
+        setIsAuthenticated(true);
+        toast.success(data.message);
+        navigate("/");
+      } else toast.error(data.message);
     } catch (error) {
-      const message = error.response?.data?.message || "Something went wrong";
-      toast.error(message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -131,31 +80,34 @@ export const Auth = () => {
   const toggleAuthMode = () => {
     setIsLogin(!isLogin);
     setErrors({});
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
+    setFormData({ name: "", email: "", password: "", confirmPassword: "" });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-rose-50 flex items-center justify-center p-4 font-['Inter']">
+    <div
+      className={`min-h-screen flex items-center justify-center p-4 font-['Inter'] ${
+        isDarkMode
+          ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"
+          : "bg-gradient-to-br from-blue-50 via-white to-rose-50"
+      }`}
+    >
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="text-3xl"><Logo width="50" height="50"/></div>
-              <span className="text-2xl font-bold text-gray-800">
+              <div className="text-3xl">
+                <Logo width="50" height="50" />
+              </div>
+              <span className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}>
                 Tranquilify
               </span>
             </div>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className={`text-2xl font-bold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             {isLogin ? "Welcome back" : "Create your account"}
           </h1>
-          <p className="text-gray-600">
+          <p className={`text-gray-600 ${isDarkMode ? "text-gray-400" : ""}`}>
             {isLogin
               ? "Sign in to continue your wellness journey"
               : "Start your journey to better mental wellness"}
@@ -163,19 +115,23 @@ export const Auth = () => {
         </div>
 
         {/* Auth Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+        <div
+          className={`rounded-2xl shadow-xl p-8 border transition-colors duration-300 ${
+            isDarkMode ? "bg-gray-900 border-gray-700" : "bg-white border-gray-100"
+          }`}
+        >
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field (Signup only) */}
             <div
               className={`transition-all duration-500 ease-in-out ${
-                isLogin
-                  ? "max-h-0 opacity-0 overflow-hidden"
-                  : "max-h-20 opacity-100"
+                isLogin ? "max-h-0 opacity-0 overflow-hidden" : "max-h-20 opacity-100"
               }`}
             >
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className={`block text-sm font-medium mb-2 ${
+                  isDarkMode ? "text-gray-300" : "text-gray-700"
+                }`}
               >
                 Full Name
               </label>
@@ -189,24 +145,26 @@ export const Auth = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-colors duration-200 ${
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent ${
                     errors.name
                       ? "border-red-300 bg-red-50"
+                      : isDarkMode
+                      ? "bg-gray-800 border-gray-600 text-white"
                       : "border-gray-300 hover:border-gray-400"
                   }`}
                   placeholder="Enter your full name"
                 />
               </div>
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-              )}
+              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
             </div>
 
             {/* Email Field */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className={`block text-sm font-medium mb-2 ${
+                  isDarkMode ? "text-gray-300" : "text-gray-700"
+                }`}
               >
                 Email Address
               </label>
@@ -220,24 +178,26 @@ export const Auth = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-colors duration-200 ${
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent ${
                     errors.email
                       ? "border-red-300 bg-red-50"
+                      : isDarkMode
+                      ? "bg-gray-800 border-gray-600 text-white"
                       : "border-gray-300 hover:border-gray-400"
                   }`}
                   placeholder="Enter your email"
                 />
               </div>
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
+              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
             </div>
 
             {/* Password Field */}
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className={`block text-sm font-medium mb-2 ${
+                  isDarkMode ? "text-gray-300" : "text-gray-700"
+                }`}
               >
                 Password
               </label>
@@ -251,9 +211,11 @@ export const Auth = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-colors duration-200 ${
+                  className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent ${
                     errors.password
                       ? "border-red-300 bg-red-50"
+                      : isDarkMode
+                      ? "bg-gray-800 border-gray-600 text-white"
                       : "border-gray-300 hover:border-gray-400"
                   }`}
                   placeholder="Enter your password"
@@ -270,22 +232,20 @@ export const Auth = () => {
                   )}
                 </button>
               </div>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
+              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
             </div>
 
             {/* Confirm Password Field (Signup only) */}
             <div
               className={`transition-all duration-500 ease-in-out ${
-                isLogin
-                  ? "max-h-0 opacity-0 overflow-hidden"
-                  : "max-h-24 opacity-100"
+                isLogin ? "max-h-0 opacity-0 overflow-hidden" : "max-h-24 opacity-100"
               }`}
             >
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className={`block text-sm font-medium mb-2 ${
+                  isDarkMode ? "text-gray-300" : "text-gray-700"
+                }`}
               >
                 Confirm Password
               </label>
@@ -299,9 +259,11 @@ export const Auth = () => {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-colors duration-200 ${
+                  className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent ${
                     errors.confirmPassword
                       ? "border-red-300 bg-red-50"
+                      : isDarkMode
+                      ? "bg-gray-800 border-gray-600 text-white"
                       : "border-gray-300 hover:border-gray-400"
                   }`}
                   placeholder="Confirm your password"
@@ -319,9 +281,7 @@ export const Auth = () => {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.confirmPassword}
-                </p>
+                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
               )}
             </div>
 
@@ -337,25 +297,16 @@ export const Auth = () => {
               </div>
             )}
 
-            {/* General Error */}
-            {errors.general && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-sm text-red-600">{errors.general}</p>
-              </div>
-            )}
-
             {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-sky-500 to-emerald-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-sky-600 hover:to-emerald-600 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
+              className="w-full bg-gradient-to-r from-sky-500 to-emerald-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-sky-600 hover:to-emerald-600 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
               {isLoading ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  <span>
-                    {isLogin ? "Signing in..." : "Creating account..."}
-                  </span>
+                  <div className="animate-spin h-5 w-5 border-b-2 border-white rounded-full" />
+                  <span>{isLogin ? "Signing in..." : "Creating account..."}</span>
                 </>
               ) : (
                 <>
@@ -366,31 +317,9 @@ export const Auth = () => {
             </button>
           </form>
 
-          {/* Terms (Signup only) */}
-          {!isLogin && (
-            <div className="mt-6 text-center">
-              <p className="text-xs text-gray-500">
-                By creating an account, you agree to our{" "}
-                <a
-                  href="#"
-                  className="text-sky-600 hover:text-sky-700 underline"
-                >
-                  Terms of Service
-                </a>{" "}
-                and{" "}
-                <a
-                  href="#"
-                  className="text-sky-600 hover:text-sky-700 underline"
-                >
-                  Privacy Policy
-                </a>
-              </p>
-            </div>
-          )}
-
           {/* Toggle Auth Mode */}
           <div className="mt-8 text-center">
-            <p className="text-gray-600">
+            <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
               {isLogin ? "Don't have an account?" : "Already have an account?"}
               <button
                 type="button"

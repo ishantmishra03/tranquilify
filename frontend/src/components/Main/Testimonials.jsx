@@ -1,8 +1,10 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { ScrollReveal } from "./ScrollReveal";
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { useAppContext } from "../../context/AppContext";
 
 const Testimonials = () => {
+  const { isDarkMode } = useAppContext();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const testimonials = [
@@ -38,33 +40,41 @@ const Testimonials = () => {
   };
 
   const prevTestimonial = () => {
-    setCurrentTestimonial(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length
-    );
+    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
   return (
     <div>
-      {/* Testimonials Section */}
       <section
         id="testimonials"
-        className="py-20 px-4 sm:px-6 lg:px-8 bg-white/50"
+        className={`py-20 px-4 sm:px-6 lg:px-8 ${
+          isDarkMode ? "bg-gray-900" : "bg-white/50"
+        }`}
       >
         <div className="max-w-4xl mx-auto">
           <ScrollReveal direction="up" className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            <h2
+              className={`text-3xl sm:text-4xl font-bold mb-4 ${
+                isDarkMode ? "text-white" : "text-gray-900"
+              }`}
+            >
               Loved by thousands of users
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              Join a community of people who have transformed their wellness
-              journey with Tranquilify.
+            <p
+              className={`max-w-2xl mx-auto text-lg ${
+                isDarkMode ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              Join a community of people who have transformed their wellness journey with Tranquilify.
             </p>
           </ScrollReveal>
 
           <ScrollReveal
             direction="up"
             delay={200}
-            className="relative bg-white rounded-2xl shadow-xl p-8 sm:p-12"
+            className={`relative rounded-2xl shadow-xl p-8 sm:p-12 ${
+              isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+            }`}
           >
             <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
               <div className="bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full p-3">
@@ -74,17 +84,16 @@ const Testimonials = () => {
 
             <div className="text-center">
               <div className="flex justify-center space-x-1 mb-6">
-                {[...Array(testimonials[currentTestimonial].rating)].map(
-                  (_, i) => (
-                    <Star
-                      key={i}
-                      className="w-5 h-5 fill-current text-yellow-400"
-                    />
-                  )
-                )}
+                {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-current text-yellow-400" />
+                ))}
               </div>
 
-              <blockquote className="text-xl text-gray-700 mb-8 leading-relaxed">
+              <blockquote
+                className={`text-xl mb-8 leading-relaxed ${
+                  isDarkMode ? "text-gray-300" : "text-gray-700"
+                }`}
+              >
                 "{testimonials[currentTestimonial].text}"
               </blockquote>
 
@@ -96,10 +105,10 @@ const Testimonials = () => {
                     .join("")}
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold text-gray-900">
+                  <div className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                     {testimonials[currentTestimonial].name}
                   </div>
-                  <div className="text-gray-600">
+                  <div className={`${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                     {testimonials[currentTestimonial].role}
                   </div>
                 </div>
@@ -109,9 +118,13 @@ const Testimonials = () => {
             <div className="flex justify-center items-center space-x-4 mt-8">
               <button
                 onClick={prevTestimonial}
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+                className={`p-2 rounded-full transition-colors duration-200 ${
+                  isDarkMode
+                    ? "bg-gray-700 hover:bg-gray-600"
+                    : "bg-gray-100 hover:bg-gray-200"
+                }`}
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <ChevronLeft className={`${isDarkMode ? "text-white" : "text-gray-600"} w-5 h-5`} />
               </button>
 
               <div className="flex space-x-2">
@@ -119,10 +132,12 @@ const Testimonials = () => {
                   <button
                     key={index}
                     onClick={() => setCurrentTestimonial(index)}
-                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                    className={`h-2 rounded-full transition-all duration-200 ${
                       index === currentTestimonial
                         ? "bg-sky-500 w-6"
-                        : "bg-gray-300"
+                        : isDarkMode
+                        ? "bg-gray-600 w-2"
+                        : "bg-gray-300 w-2"
                     }`}
                   />
                 ))}
@@ -130,9 +145,13 @@ const Testimonials = () => {
 
               <button
                 onClick={nextTestimonial}
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+                className={`p-2 rounded-full transition-colors duration-200 ${
+                  isDarkMode
+                    ? "bg-gray-700 hover:bg-gray-600"
+                    : "bg-gray-100 hover:bg-gray-200"
+                }`}
               >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
+                <ChevronRight className={`${isDarkMode ? "text-white" : "text-gray-600"} w-5 h-5`} />
               </button>
             </div>
           </ScrollReveal>
