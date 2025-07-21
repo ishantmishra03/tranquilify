@@ -7,10 +7,23 @@ import {
   Clock,
   RefreshCw,
   ArrowLeft,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
+
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+
+if (recognition) {
+  recognition.continuous = false;
+  recognition.lang = "en-US";
+}
 
 export default function Therapist() {
   const navigate = useNavigate();
@@ -20,29 +33,52 @@ export default function Therapist() {
     {
       id: 1,
       content:
-        "Hello! I'm your AI wellness companion. This is a temporary, private conversation that won't be saved. I'm here to listen and help you work through whatever is on your mind. How are you feeling today?",
+        "Hello! I'm your AI wellness companion. This is a private and temporary conversation. How are you feeling today?",
       isUser: false,
       timestamp: new Date(),
       type: "text",
     },
   ]);
+
   const [currentMessage, setCurrentMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState(null);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [listening, setListening] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, [messages]);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (!voiceEnabled || messages.length < 2) return;
+    const lastMsg = messages[messages.length - 1];
+    if (!lastMsg.isUser) {
+      const utterance = new SpeechSynthesisUtterance(lastMsg.content);
+      utterance.lang = "en-US";
+      utterance.pitch = 1;
+      utterance.rate = 1.5;
+
+      setIsSpeaking(true);
+
+      utterance.onend = () => {
+        setIsSpeaking(false);
+      };
+
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+      };
+
+      speechSynthesis.speak(utterance);
+    }
+  }, [messages, voiceEnabled]);
 
   const sendMessage = async () => {
     if (!currentMessage.trim()) return;
 
-    const userMsg = {
+    const userMessage = {
       id: Date.now(),
       content: currentMessage,
       isUser: true,
@@ -50,7 +86,7 @@ export default function Therapist() {
       type: "text",
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages((prev) => [...prev, userMessage]);
     setCurrentMessage("");
     setIsTyping(true);
     setError(null);
@@ -72,14 +108,14 @@ export default function Therapist() {
       );
 
       if (res.data.success) {
-        const aiReply = {
+        const reply = {
           id: Date.now() + 1,
           content: res.data.reply,
           isUser: false,
           timestamp: new Date(),
           type: "text",
         };
-        setMessages((prev) => [...prev, aiReply]);
+        setMessages((prev) => [...prev, reply]);
       } else {
         throw new Error(res.data.message || "Unknown error");
       }
@@ -101,12 +137,38 @@ export default function Therapist() {
     }
   };
 
+  const startVoiceInput = () => {
+    if (!recognition) {
+      alert("Speech recognition not supported in your browser.");
+      return;
+    }
+
+    setListening(true);
+    recognition.start();
+
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      setCurrentMessage(transcript);
+      setListening(false);
+      setTimeout(sendMessage, 300); // slight delay to allow state update
+    };
+
+    recognition.onerror = () => {
+      alert("Voice input failed. Please try again.");
+      setListening(false);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+    };
+  };
+
   const startNewSession = () => {
     setMessages([
       {
         id: 1,
         content:
-          "Hello! I'm your AI wellness companion. This is a fresh, temporary conversation that won't be saved. I'm here to listen and support you. What would you like to talk about today?",
+          "Hello! I'm your AI wellness companion. This is a fresh, private session. What would you like to talk about today?",
         isUser: false,
         timestamp: new Date(),
         type: "text",
@@ -117,12 +179,8 @@ export default function Therapist() {
     setError(null);
   };
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  const formatTime = (date) =>
+    date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
   return (
     <div
@@ -146,9 +204,7 @@ export default function Therapist() {
               <Brain className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">
-                AI Wellness Companion
-              </h3>
+              <h3 className="font-semibold text-lg">AI Wellness Companion</h3>
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full" />
                 <span className="text-sm text-emerald-600 font-medium">
@@ -157,8 +213,31 @@ export default function Therapist() {
               </div>
             </div>
           </div>
-
           <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setVoiceEnabled((v) => !v)}
+              title="Toggle AI Voice"
+              className="p-2 rounded-lg hover:bg-sky-100 dark:hover:bg-slate-700"
+            >
+              {voiceEnabled ? (
+                <Volume2 className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+              ) : (
+                <VolumeX className="w-5 h-5 text-gray-400" />
+              )}
+            </button>
+            {isSpeaking && (
+              <button
+                onClick={() => {
+                  speechSynthesis.cancel();
+                  setIsSpeaking(false);
+                }}
+                title="Stop AI Voice"
+                className="p-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-800"
+              >
+                <VolumeX className="w-5 h-5 text-red-500" />
+              </button>
+            )}
+
             <button
               onClick={() => navigate("/dashboard")}
               className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 text-white font-semibold text-sm shadow-md hover:from-sky-600 hover:to-emerald-600 transition-all duration-200"
@@ -168,7 +247,7 @@ export default function Therapist() {
             </button>
             <button
               onClick={startNewSession}
-              className={`p-2 rounded-lg group transition-all ${
+              className={`p-2 rounded-lg group ${
                 isDarkMode ? "hover:bg-slate-700" : "hover:bg-gray-100"
               }`}
             >
@@ -184,7 +263,7 @@ export default function Therapist() {
         </div>
       </div>
 
-      {/* Privacy Notice */}
+      {/* Privacy Info */}
       <div
         className={`border-b p-4 text-sm flex items-center justify-center space-x-2 ${
           isDarkMode
@@ -275,23 +354,41 @@ export default function Therapist() {
         }`}
       >
         <div className="flex items-center space-x-3">
+          <button
+            onClick={startVoiceInput}
+            disabled={listening}
+            className={`p-3 rounded-xl border ${
+              listening
+                ? "bg-red-500 text-white animate-pulse"
+                : "bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200"
+            }`}
+            title="Voice input"
+          >
+            {listening ? (
+              <MicOff className="w-5 h-5" />
+            ) : (
+              <Mic className="w-5 h-5" />
+            )}
+          </button>
+
           <input
             type="text"
             value={currentMessage}
             onChange={(e) => setCurrentMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            placeholder="Share what's on your mind... (temporary & private)"
-            className={`w-full px-4 py-3 rounded-xl transition-all duration-200 focus:outline-none ${
+            placeholder="Speak or type your message..."
+            className={`w-full px-4 py-3 rounded-xl focus:outline-none ${
               isDarkMode
                 ? "bg-slate-800 border border-slate-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-sky-500"
                 : "bg-white border border-gray-300 text-gray-900 focus:ring-2 focus:ring-sky-500"
             }`}
             disabled={isTyping}
           />
+
           <button
             onClick={sendMessage}
             disabled={!currentMessage.trim() || isTyping}
-            className="p-3 bg-gradient-to-r from-sky-500 to-emerald-500 text-white rounded-xl hover:from-sky-600 hover:to-emerald-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
+            className="p-3 bg-gradient-to-r from-sky-500 to-emerald-500 text-white rounded-xl hover:from-sky-600 hover:to-emerald-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <Send className="w-5 h-5" />
           </button>

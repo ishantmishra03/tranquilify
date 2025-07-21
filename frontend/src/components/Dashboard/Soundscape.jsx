@@ -81,7 +81,7 @@ const formatTime = (sec) => {
 };
 
 const SuggestedSoundscape = ({ mood = 3, stressLevel = 2 }) => {
-  const { isDarkMode } = useAppContext(); // ✅ Access dark mode
+  const { isDarkMode } = useAppContext(); 
 
   const getSuggestedTrack = () => {
     if (stressLevel >= 3 || mood <= 2)

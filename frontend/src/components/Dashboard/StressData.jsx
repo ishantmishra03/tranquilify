@@ -296,7 +296,7 @@ export default function StressData() {
           <Brain className="w-5 h-5 text-gray-400" />
         </div>
         <div className="space-y-4">
-          {stressAssessments.slice(0, 3).reverse().map((a) => (
+          {stressAssessments.slice(-3).map((a) => (
             <div key={a._id} className={`border rounded-xl p-4 ${isDarkMode ? "border-slate-700" : "border-gray-200"}`}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 space-y-2 sm:space-y-0">
                 <div className="flex items-center space-x-3">

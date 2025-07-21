@@ -5,6 +5,7 @@ import { MoodGraph } from "../Figure/MoodGraph";
 import { StressCard } from "./StressCard";
 import { MoodCard } from "./MoodCard";
 import { TwoMinBreathing } from "../2MinBreathing";
+import DailyQuotes from "./DailyQuotes";
 import {
   TrendingUp,
   Zap,
@@ -74,7 +75,7 @@ export const DashboardMain = ({ data }) => {
     window.URL.revokeObjectURL(url);
   };
 
-  // Conditional bg/text classes for dark mode
+  
   const containerBg = isDarkMode ? "bg-gray-900 text-gray-200" : "bg-white text-gray-900";
   const borderGray = isDarkMode ? "border-gray-700" : "border-gray-100";
   const cardShadow = isDarkMode ? "shadow-xl shadow-black/40" : "shadow-lg";
@@ -85,7 +86,6 @@ export const DashboardMain = ({ data }) => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
       <div className={`${gradientBg} rounded-2xl p-6`}>
         <div className="flex items-center justify-between">
           <div>
@@ -106,7 +106,7 @@ export const DashboardMain = ({ data }) => {
         </div>
       </div>
 
-      {/* Try AI Therapist Shortcut */}
+      {/* Try AI Therapist */}
       <div className="flex flex-wrap gap-4 justify-start">
         <Link
           to="/therapist"
@@ -193,6 +193,9 @@ export const DashboardMain = ({ data }) => {
           </div>
         </div>
       </div>
+
+      {/* Daily Quotes  */}
+      <DailyQuotes />
 
       {/* Mood + Stress Factors */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

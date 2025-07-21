@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import cron from 'node-cron';
 
+
 import MoodLog from './models/mood.models.js';
 import StressAssessment from './models/stress.models.js';
 
@@ -29,7 +30,7 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'), false);
     }
   },
-   credentials: true,
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -47,6 +48,7 @@ app.use('/api/pdf', pdfRouter);
 app.get('/', (req, res) => {
   res.send('SERVER WORKING !');
 });
+
 
 //CleanUp Code
 cron.schedule("0 0 * * 1", async () => {

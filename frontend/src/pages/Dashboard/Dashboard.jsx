@@ -16,12 +16,14 @@ import {
   Waves,
   Sun,
   Moon,
+  HeartHandshake,
 } from "lucide-react";
 import { DashboardMain } from "../../components/Dashboard/DashboardMain";
 import MoodCheck from "../../components/Dashboard/MoodCheck";
 import { StressForm } from "../../components/Dashboard/StressForm";
 import { HabitsPage } from "../../components/Dashboard/HabitsPage";
 import Soundscape from "../../components/Dashboard/Soundscape";
+import SelfCarePlanner from "../../components/Dashboard/SelfCarePlanner/SelfCarePlanner";
 import Logo from "../../components/Favicon/Logo";
 
 export const Dashboard = () => {
@@ -42,11 +44,6 @@ export const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch("/src/data/data.json");
-        const jsonData = await response.json();
-        setData(jsonData);
-      } catch (error) {
-        console.log(error.message);
         const fallbackData = {
           weeklyStats: {
             averageMood: 4.1,
@@ -60,13 +57,15 @@ export const Dashboard = () => {
             {
               id: 1,
               title: "Breathing Exercise",
-              tip: "Try the 4-7-8 breathing technique: Inhale for 4 counts, hold for 7, exhale for 8.",
+              tip: "Try the 4-4-6 breathing technique: Inhale for 4 counts, hold for 4, exhale for 6.",
               category: "breathing",
               icon: "🌬️",
             },
           ],
         };
         setData(fallbackData);
+      } catch (error) {
+        console.log(error.message);
       } finally {
         setLoading(false);
       }
@@ -82,6 +81,7 @@ export const Dashboard = () => {
     { id: "habits", label: "Habits", icon: Target },
     { id: "therapist", label: "Therapist", icon: Bot },
     { id: "soundscape", label: "Soundscape", icon: Waves },
+    { id: "self-care", label: "Self-care", icon: HeartHandshake },
   ];
 
   const handleLogout = async () => {
@@ -114,6 +114,10 @@ export const Dashboard = () => {
         return <HabitsPage />;
       case "soundscape":
         return <Soundscape mood={avgMoodLevel} stressLevel={avgStressLevel} />;
+      case "self-care":
+        return (
+          <SelfCarePlanner mood={avgMoodLevel} stressLevel={avgStressLevel} />
+        );
       case "therapist":
         return <Navigate to="/therapist" replace={true} />;
       default:
@@ -186,9 +190,6 @@ export const Dashboard = () => {
             </div>
             <div>
               <div className="font-semibold">{userData.name}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                {userData.streak} day streak 🔥
-              </div>
             </div>
           </div>
         </div>
@@ -280,19 +281,6 @@ export const Dashboard = () => {
             </div>
 
             <div className="flex items-center space-x-4">
-              <div
-                className={`hidden sm:flex items-center space-x-2 px-3 py-2 rounded-full ${
-                  isDarkMode
-                    ? "bg-emerald-700/30 text-emerald-200"
-                    : "bg-emerald-50 text-emerald-700"
-                }`}
-              >
-                <Award className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  {userData.streak || 0} Day Streak
-                </span>
-              </div>
-
               {/* User avatar */}
               <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                 {userData?.name

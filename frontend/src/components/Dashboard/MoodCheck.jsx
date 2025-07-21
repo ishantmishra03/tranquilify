@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import axios from '../../config/axios';
+import api from "axios";
 import { Smile, Camera, RefreshCcw, Loader2, Check, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAppContext } from '../../context/AppContext'; 
@@ -16,7 +17,7 @@ const MoodCheck = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const manualMoods = ['Happy', 'Neutral', 'Sad', 'Angry', 'Excited'];
+  const manualMoods = ['happy', 'Neutral', 'Sad', 'Angry', 'Excited'];
 
   const startCamera = () => {
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -58,7 +59,7 @@ const MoodCheck = () => {
     const dataURL = canvas.toDataURL('image/jpeg');
 
     try {
-      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND2_URL}/analyze`, {
+      const { data } = await api.post(`${import.meta.env.VITE_BACKEND2_URL}/analyze`, {
         image: dataURL,
       });
 

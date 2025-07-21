@@ -15,11 +15,15 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": [
+    "http://localhost:5173",
+    "https://tranquilify.vercel.app"
+]}})
+
 
 #Format : {ip_address: {route: last_timestamp}}
 rate_limit = {}
-RATE_LIMIT_SECONDS = 300  # 5 minutes
+RATE_LIMIT_SECONDS = 300  
 
 def is_rate_limited(ip, route):
     now = time.time()
@@ -177,6 +181,93 @@ def ai_therapist_chat():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
+
+    try:
+        data = request.json
+        user_message = data.get("message")
+
+        if not user_message:
+            return jsonify({'success': False, 'message': 'No user message provided'}), 400
+
+        def generate():
+            response = groq_client.chat.completions.create(
+                model="llama3-70b-8192",  # You can switch to another Groq model
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are a compassionate AI therapist. Respond with empathy and encouragement. "
+                            "Speak clearly and kindly. Keep responses supportive and emotionally intelligent."
+                        )
+                    },
+                    {"role": "user", "content": user_message}
+                ],
+                stream=True
+            )
+
+            for chunk in response:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    token = chunk.choices[0].delta.content
+                    yield f"data: {token}\n\n"
+
+        return Response(generate(), content_type='text/event-stream')
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/api/self-care-plan', methods=['POST'])
+def self_care_plan():
+    try:
+        data = request.json
+        mood = data.get('mood')
+        stress_level = data.get('stress_level')
+        habits = data.get('habits', [])
+
+        if not mood or stress_level is None:
+            return jsonify({'success': False, 'message': 'Mood and stress level are required'}), 400
+
+        prompt = f"""
+You are an empathetic mental wellness assistant. Based on this user's state:
+- Mood: {mood}
+- Stress Level: {stress_level}/10
+- Recent Habits: {', '.join(habits) if habits else 'None'}
+
+Suggest a calming and practical **daily self-care plan** with 4-5 bullet points. Focus on:
+- Mindfulness
+- Hydration
+- Physical movement
+- Sleep hygiene
+- Mental rest
+
+Keep it concise and clear in **plain text**, not JSON. and dont add further 3rd party apps examples . If suggested breathing suggest tranquilify breathing exercise.
+"""
+
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": "llama3-8b-8192",
+            "messages": [
+                {"role": "system", "content": "You are a helpful wellness coach."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.7,
+            "max_tokens": 400
+        }
+
+        response = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+
+        if response.status_code != 200:
+            return jsonify({'success': False, 'message': 'Failed to get response from Groq'}), 500
+
+        plan = response.json()['choices'][0]['message']['content'].strip()
+        return jsonify({'success': True, 'plan': plan})
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

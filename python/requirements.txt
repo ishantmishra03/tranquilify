@@ -1,5 +1,7 @@
-flask 
-flask-cors 
-deepface  
+flask
+flask-cors
+python-dotenv
+requests
+deepface
+opencv-python
 numpy
-load_dotenv

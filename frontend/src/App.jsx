@@ -9,7 +9,7 @@ import { Dashboard } from "./pages/Dashboard/Dashboard";
 import Therapist from "./pages/Therapist/Therapist";
 import StressData from "./components/Dashboard/StressData";
 
-import {MoodGraphPage} from "./pages/Figure/MoodGraphPage";
+import { MoodGraphPage } from "./pages/Figure/MoodGraphPage";
 import { StressGraphPage } from "./pages/Figure/StressGraphPage";
 
 import ProtectedRoute from "./config/ProtectedRoute";
@@ -29,7 +29,6 @@ const App = () => {
     }
   };
 
-  // Fetch user info on mount
   useEffect(() => {
     fetchUser();
   }, []);
