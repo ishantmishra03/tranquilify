@@ -17,10 +17,14 @@ import habitRouter from './routes/habit.routes.js';
 import userRouter from './routes/user.routes.js';
 import moodRouter from './routes/mood.routes.js';
 import pdfRouter from './routes/pdf.routes.js';
+import journalRouter from './routes/journal.routes.js';
+import blogRouter from './routes/blog.routes.js';
+
+import adminRouter from './routes/admin.routes.js';
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:5173', 'https://tran-test.netlify.app']
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://tran-test.netlify.app']
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -44,6 +48,11 @@ app.use('/api/habits', habitRouter);
 app.use('/api/user', userRouter);
 app.use('/api/mood', moodRouter);
 app.use('/api/pdf', pdfRouter);
+app.use('/api/journal', journalRouter);
+app.use('/api/blog', blogRouter);
+
+//Admin
+app.use('/api/admin', adminRouter);
 
 app.get('/', (req, res) => {
   res.send('SERVER WORKING !');

@@ -137,7 +137,7 @@ def ai_therapist_chat():
         if not messages or not isinstance(messages, list):
             return jsonify({'success': False, 'message': 'Messages must be a list'}), 400
 
-        # Prepare payload for Groq API
+        
         payload = {
     "model": "llama3-8b-8192",
     "messages": [
@@ -153,7 +153,7 @@ def ai_therapist_chat():
                 "Never include raw HTML. Markdown only."
             )
         },
-        *messages  # previous messages
+        *messages  
     ],
     "temperature": 0.7,
     "max_tokens": 500
@@ -215,7 +215,6 @@ def ai_therapist_chat():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-
 @app.route('/api/self-care-plan', methods=['POST'])
 def self_care_plan():
     try:
@@ -268,6 +267,111 @@ Keep it concise and clear in **plain text**, not JSON. and dont add further 3rd 
 
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/journal-prompt', methods=['POST'])
+def journal_prompt():
+    try:
+        data = request.json
+        journals = data.get('journals', [])
+
+        if not isinstance(journals, list) or len(journals) == 0:
+            return jsonify({'success': False, 'message': 'Journals list is required'}), 400
+
+       
+        journal_text = "\n\n".join(journals)
+
+        prompt = f"""
+You are a thoughtful and empathetic mental wellness assistant.
+
+Given the following journal entries by a user:
+{journal_text}
+
+Please generate a concise and insightful reflection summary focusing on the user's mood patterns, emotional trends, and any recurring themes.
+
+Provide 3-5 bullet points in plain text that the user can reflect on.
+
+Return only the reflection text, no JSON, no explanations.
+"""
+
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": "llama3-8b-8192",
+            "messages": [
+                {"role": "system", "content": "You are a helpful mental wellness assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.7,
+            "max_tokens": 400
+        }
+
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers=headers,
+            json=payload
+        )
+
+        if response.status_code != 200:
+            return jsonify({'success': False, 'message': 'Failed to get response from Groq'}), 500
+
+        reflection = response.json()['choices'][0]['message']['content'].strip()
+
+        return jsonify({'success': True, 'prompt': reflection})
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/daily-quotes', methods=['GET'])
+def get_daily_quotes():
+    try:
+        prompt = (
+            "Provide 3 short motivational or inspirational quotes related with mental wellness. "
+            "Respond ONLY as a JSON array of objects, each with 'content' and 'author' fields. "
+            "Do not include any other text or formatting."
+        )
+
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": "llama3-8b-8192",
+            "messages": [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.7,
+            "max_tokens": 300
+        }
+
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers=headers,
+            json=payload
+        )
+
+        if response.status_code != 200:
+            return jsonify({'success': False, 'message': 'Failed to get quotes from Groq'}), 500
+
+        raw_content = response.json()['choices'][0]['message']['content'].strip()
+
+        try:
+            quotes = json.loads(raw_content)
+        except json.JSONDecodeError:
+            return jsonify({'success': False, 'message': 'Invalid response format from Groq'}), 500
+
+        if not isinstance(quotes, list) or not all("content" in q and "author" in q for q in quotes):
+            return jsonify({'success': False, 'message': 'Malformed quote structure'}), 500
+
+        return jsonify({'success': True, 'quotes': quotes})
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

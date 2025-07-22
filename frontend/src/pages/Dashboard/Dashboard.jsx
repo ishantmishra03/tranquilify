@@ -17,6 +17,7 @@ import {
   Sun,
   Moon,
   HeartHandshake,
+  BookAIcon
 } from "lucide-react";
 import { DashboardMain } from "../../components/Dashboard/DashboardMain";
 import MoodCheck from "../../components/Dashboard/MoodCheck";
@@ -24,6 +25,7 @@ import { StressForm } from "../../components/Dashboard/StressForm";
 import { HabitsPage } from "../../components/Dashboard/HabitsPage";
 import Soundscape from "../../components/Dashboard/Soundscape";
 import SelfCarePlanner from "../../components/Dashboard/SelfCarePlanner/SelfCarePlanner";
+import Journal from "../../components/Dashboard/Journal/Journal";
 import Logo from "../../components/Favicon/Logo";
 
 export const Dashboard = () => {
@@ -41,6 +43,7 @@ export const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  //Dummy Data
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -78,9 +81,10 @@ export const Dashboard = () => {
     { id: "dashboard", label: "Dashboard", icon: Home },
     { id: "mood-check", label: "Mood Check", icon: Heart },
     { id: "stress-form", label: "Stress Form", icon: Activity },
-    { id: "habits", label: "Habits", icon: Target },
     { id: "therapist", label: "Therapist", icon: Bot },
+    { id: "habits", label: "Habits", icon: Target },
     { id: "soundscape", label: "Soundscape", icon: Waves },
+    {id: "journal", label : "Journal", icon: BookAIcon},
     { id: "self-care", label: "Self-care", icon: HeartHandshake },
   ];
 
@@ -114,6 +118,8 @@ export const Dashboard = () => {
         return <HabitsPage />;
       case "soundscape":
         return <Soundscape mood={avgMoodLevel} stressLevel={avgStressLevel} />;
+      case "journal":
+        return <Journal />
       case "self-care":
         return (
           <SelfCarePlanner mood={avgMoodLevel} stressLevel={avgStressLevel} />

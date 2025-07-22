@@ -11,12 +11,8 @@ const Navbar = () => {
   const isHome = location.pathname === "/";
   const navigate = useNavigate();
 
-  const {
-    isAuthenticated,
-    setIsAuthenticated,
-    isDarkMode,
-    setIsDarkMode,
-  } = useAppContext();
+  const { isAuthenticated, setIsAuthenticated, isDarkMode, setIsDarkMode } =
+    useAppContext();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -34,7 +30,6 @@ const Navbar = () => {
 
   return (
     <div>
-      {/* Navigation */}
       <nav
         className={`fixed top-0 left-0 w-full z-50 border-b backdrop-blur-lg ${
           isDarkMode
@@ -77,6 +72,12 @@ const Navbar = () => {
                   </a>
                 </>
               )}
+              <button
+                onClick={() => navigate("/blogs")}
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2 rounded-full hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer"
+              >
+                Blogs
+              </button>
 
               {isAuthenticated && (
                 <button
@@ -143,7 +144,10 @@ const Navbar = () => {
             <div className="px-4 pt-2 pb-3 space-y-1">
               {isHome && (
                 <>
-                  <a href="#features" className="block px-3 py-2 hover:underline">
+                  <a
+                    href="#features"
+                    className="block px-3 py-2 hover:underline"
+                  >
                     Features
                   </a>
                   <a
@@ -152,7 +156,10 @@ const Navbar = () => {
                   >
                     Reviews
                   </a>
-                  <a href="#screenshots" className="block px-3 py-2 hover:underline">
+                  <a
+                    href="#screenshots"
+                    className="block px-3 py-2 hover:underline"
+                  >
                     About
                   </a>
                 </>
@@ -189,6 +196,12 @@ const Navbar = () => {
                   Dashboard
                 </button>
               )}
+              <button
+                onClick={() => navigate("/blogs")}
+                className="max-w-fit block m-auto bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-12 py-2 rounded-full mt-2"
+              >
+                Blogs
+              </button>
 
               {/* Mobile Dark Mode Toggle */}
               <div className="flex justify-center pt-2">

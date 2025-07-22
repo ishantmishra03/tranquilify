@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useAppContext } from "../../context/AppContext";
 import { toast } from "react-hot-toast";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -28,27 +29,20 @@ export default function DailyQuotes() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        "https://api.quotable.io/quotes?tags=happiness|life&limit=3"
-      );
-      if (!res.ok) {
-        toast.error("Failed to fetch quotes");
-        setError("Failed to fetch quotes");
-        setLoading(false);
-        return;
+      const res = await axios.get("http://localhost:5001/daily-quotes"); // Change to your deployed backend if needed
+
+      if (!res.data.success) {
+        throw new Error("Failed to load quotes");
       }
-      const json = await res.json();
-      const fetchedQuotes = json.results.map((q) => ({
-        _id: q._id,
-        content: q.content,
-        author: q.author,
-      }));
+
+      const fetchedQuotes = res.data.quotes;
       setQuotes(fetchedQuotes);
       localStorage.setItem(
         "dailyQuotes",
         JSON.stringify({ data: fetchedQuotes, timestamp: Date.now() })
       );
     } catch (e) {
+      toast.error("Unable to load quotes. Please try again later.");
       setError("Unable to load quotes. Please try again later.");
     } finally {
       setLoading(false);

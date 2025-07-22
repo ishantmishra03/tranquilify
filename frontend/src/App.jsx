@@ -12,6 +12,9 @@ import StressData from "./components/Dashboard/StressData";
 import { MoodGraphPage } from "./pages/Figure/MoodGraphPage";
 import { StressGraphPage } from "./pages/Figure/StressGraphPage";
 
+import Blogs from "./pages/Blogs/Blogs";
+import BlogPage from "./components/Blogs/BlogPage";
+
 import ProtectedRoute from "./config/ProtectedRoute";
 
 const App = () => {
@@ -37,6 +40,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/blogs/:id" element={<BlogPage />} />
         <Route
           path="/dashboard"
           element={
