@@ -146,75 +146,7 @@ export const DashboardMain = ({ data }) => {
         {/* Stress Card */}
         <StressCard />
 
-        {/* Energy Card */}
-        <div
-          className={`${containerBg} rounded-2xl p-6 ${cardShadow} border ${borderGray}`}
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div
-                className={`w-12 h-12 ${
-                  isDarkMode ? "bg-yellow-800" : "bg-yellow-100"
-                } rounded-xl flex items-center justify-center`}
-              >
-                <Zap
-                  className={`w-6 h-6 ${
-                    isDarkMode ? "text-yellow-400" : "text-yellow-600"
-                  }`}
-                />
-              </div>
-              <div>
-                <h3
-                  className={`${
-                    isDarkMode ? "text-gray-200" : "text-gray-900"
-                  } font-semibold`}
-                >
-                  Energy Level
-                </h3>
-                <p
-                  className={`${
-                    isDarkMode ? "text-gray-400" : "text-gray-600"
-                  } text-sm`}
-                >
-                  This week
-                </p>
-              </div>
-            </div>
-            <div
-              className={`flex items-center space-x-1 ${
-                isDarkMode ? "text-emerald-400" : "text-emerald-600"
-              }`}
-            >
-              <TrendingUp className="w-4 h-4" />
-              <span className="text-sm font-medium">{`+${data.weeklyStats.energyIncrease}%`}</span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <span
-              className={`${
-                isDarkMode ? "text-gray-100" : "text-gray-900"
-              } text-3xl font-bold`}
-            >
-              {data.weeklyStats.averageEnergy}
-            </span>
-            <div className="flex space-x-1">
-              {[1, 2, 3, 4, 5].map((level) => (
-                <div
-                  key={level}
-                  className={`w-2 h-6 rounded-full ${
-                    level <= data.weeklyStats.averageEnergy
-                      ? isDarkMode
-                        ? "bg-yellow-500"
-                        : "bg-yellow-400"
-                      : isDarkMode
-                      ? "bg-gray-700"
-                      : "bg-gray-200"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+       
       </div>
 
       {/* Daily Quotes  */}
