@@ -15,6 +15,7 @@ import {
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
+import {toast} from "react-hot-toast";
 
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -139,7 +140,7 @@ export default function Therapist() {
 
   const startVoiceInput = () => {
     if (!recognition) {
-      alert("Speech recognition not supported in your browser.");
+      toast.error("Speech recognition not supported in your browser.");
       return;
     }
 
@@ -150,7 +151,7 @@ export default function Therapist() {
       const transcript = e.results[0][0].transcript;
       setCurrentMessage(transcript);
       setListening(false);
-      setTimeout(sendMessage, 300); // slight delay to allow state update
+      setTimeout(sendMessage, 300); 
     };
 
     recognition.onerror = () => {
@@ -181,6 +182,12 @@ export default function Therapist() {
 
   const formatTime = (date) =>
     date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+  useEffect(() => {
+  return () => {
+    speechSynthesis.cancel();
+  };
+}, []);
 
   return (
     <div
@@ -214,17 +221,20 @@ export default function Therapist() {
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setVoiceEnabled((v) => !v)}
-              title="Toggle AI Voice"
-              className="p-2 rounded-lg hover:bg-sky-100 dark:hover:bg-slate-700"
-            >
-              {voiceEnabled ? (
-                <Volume2 className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-              ) : (
-                <VolumeX className="w-5 h-5 text-gray-400" />
-              )}
-            </button>
+            <div className="flex items-center space-x-1">
+              <button
+                onClick={() => setVoiceEnabled((v) => !v)}
+                title="Toggle AI Voice"
+                className="p-2 rounded-lg hover:bg-sky-100 dark:hover:bg-slate-700"
+              >
+                {voiceEnabled ? (
+                  <Volume2 className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+                ) : (
+                  <VolumeX className="w-5 h-5 text-gray-400" />
+                )}
+              </button>
+            </div>
+
             {isSpeaking && (
               <button
                 onClick={() => {

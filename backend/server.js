@@ -21,6 +21,7 @@ import journalRouter from './routes/journal.routes.js';
 import blogRouter from './routes/blog.routes.js';
 
 import adminRouter from './routes/admin.routes.js';
+import resetRouter from './routes/reset.routes.js';
 
 const app = express();
 
@@ -53,6 +54,9 @@ app.use('/api/blog', blogRouter);
 
 //Admin
 app.use('/api/admin', adminRouter);
+
+//Reset App
+app.use('/api/reset', resetRouter);
 
 app.get('/', (req, res) => {
   res.send('SERVER WORKING !');

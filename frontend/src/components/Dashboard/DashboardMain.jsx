@@ -10,7 +10,6 @@ import {
   TrendingUp,
   Zap,
   Lightbulb,
-  Award,
   Brain,
   Wind,
   Activity,
@@ -18,6 +17,7 @@ import {
 import axios from "../../config/axios";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import DailyAlert from "../Popups/DailyAlert";
 
 export const DashboardMain = ({ data }) => {
   const navigate = useNavigate();
@@ -75,17 +75,21 @@ export const DashboardMain = ({ data }) => {
     window.URL.revokeObjectURL(url);
   };
 
-  
-  const containerBg = isDarkMode ? "bg-gray-900 text-gray-200" : "bg-white text-gray-900";
+  const containerBg = isDarkMode
+    ? "bg-gray-900 text-gray-200"
+    : "bg-white text-gray-900";
   const borderGray = isDarkMode ? "border-gray-700" : "border-gray-100";
   const cardShadow = isDarkMode ? "shadow-xl shadow-black/40" : "shadow-lg";
   const gradientBg = isDarkMode
     ? "bg-gradient-to-r from-sky-700 to-emerald-700 text-white"
     : "bg-gradient-to-r from-sky-500 to-emerald-500 text-white";
-  const aiTipBg = isDarkMode ? "bg-gradient-to-r from-purple-900 to-pink-900 border-purple-700" : "bg-gradient-to-r from-purple-50 to-pink-50 border-purple-100";
+  const aiTipBg = isDarkMode
+    ? "bg-gradient-to-r from-purple-900 to-pink-900 border-purple-700"
+    : "bg-gradient-to-r from-purple-50 to-pink-50 border-purple-100";
 
   return (
     <div className="space-y-6">
+      <DailyAlert />
       <div className={`${gradientBg} rounded-2xl p-6`}>
         <div className="flex items-center justify-between">
           <div>
@@ -96,10 +100,6 @@ export const DashboardMain = ({ data }) => {
               You're doing great on your wellness journey
             </p>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Award className="w-5 h-5" />
-                <span className="font-semibold">{userData.streak} day streak</span>
-              </div>
             </div>
           </div>
           <div className="text-6xl opacity-20 select-none">🌿</div>
@@ -129,6 +129,13 @@ export const DashboardMain = ({ data }) => {
           <Activity className="w-5 h-5" />
           <span className="text-sm font-medium">Stress Data</span>
         </button>
+        <Link
+          to="/blogs"
+          className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:from-pink-600 hover:to-purple-600 transition shadow-lg hover:shadow-xl"
+        >
+          <Lightbulb className="w-5 h-5" />
+          <span className="text-sm font-medium">Read Blogs</span>
+        </Link>
       </div>
 
       {/* Stats Cards */}
@@ -157,21 +164,37 @@ export const DashboardMain = ({ data }) => {
                 />
               </div>
               <div>
-                <h3 className={`${isDarkMode ? "text-gray-200" : "text-gray-900"} font-semibold`}>
+                <h3
+                  className={`${
+                    isDarkMode ? "text-gray-200" : "text-gray-900"
+                  } font-semibold`}
+                >
                   Energy Level
                 </h3>
-                <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"} text-sm`}>
+                <p
+                  className={`${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  } text-sm`}
+                >
                   This week
                 </p>
               </div>
             </div>
-            <div className={`flex items-center space-x-1 ${isDarkMode ? "text-emerald-400" : "text-emerald-600"}`}>
+            <div
+              className={`flex items-center space-x-1 ${
+                isDarkMode ? "text-emerald-400" : "text-emerald-600"
+              }`}
+            >
               <TrendingUp className="w-4 h-4" />
               <span className="text-sm font-medium">{`+${data.weeklyStats.energyIncrease}%`}</span>
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <span className={`${isDarkMode ? "text-gray-100" : "text-gray-900"} text-3xl font-bold`}>
+            <span
+              className={`${
+                isDarkMode ? "text-gray-100" : "text-gray-900"
+              } text-3xl font-bold`}
+            >
               {data.weeklyStats.averageEnergy}
             </span>
             <div className="flex space-x-1">
@@ -220,7 +243,11 @@ export const DashboardMain = ({ data }) => {
               >
                 AI Wellness Tip
               </h3>
-              <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"} text-sm`}>
+              <p
+                className={`${
+                  isDarkMode ? "text-gray-400" : "text-gray-600"
+                } text-sm`}
+              >
                 Personalized for you
               </p>
             </div>
@@ -239,7 +266,11 @@ export const DashboardMain = ({ data }) => {
               >
                 {data.aiTips[0].title}
               </h4>
-              <p className={`${isDarkMode ? "text-gray-300" : "text-gray-700"} leading-relaxed`}>
+              <p
+                className={`${
+                  isDarkMode ? "text-gray-300" : "text-gray-700"
+                } leading-relaxed`}
+              >
                 {data.aiTips[0].tip}
               </p>
               <span
@@ -271,7 +302,11 @@ export const DashboardMain = ({ data }) => {
         </div>
 
         {loadingHabits ? (
-          <p className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+          <p
+            className={`text-center ${
+              isDarkMode ? "text-gray-400" : "text-gray-500"
+            }`}
+          >
             Loading habits...
           </p>
         ) : (
@@ -299,7 +334,11 @@ export const DashboardMain = ({ data }) => {
                     >
                       {habit.name}
                     </h4>
-                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm ${
+                        isDarkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
                       {habit.streak} day streak
                     </p>
                   </div>
@@ -344,7 +383,11 @@ export const DashboardMain = ({ data }) => {
       </div>
 
       {/* Breathing exercise modal */}
-      <div>{showBreathing && <TwoMinBreathing onClose={() => setShowBreathing(false)} />}</div>
+      <div>
+        {showBreathing && (
+          <TwoMinBreathing onClose={() => setShowBreathing(false)} />
+        )}
+      </div>
     </div>
   );
 };

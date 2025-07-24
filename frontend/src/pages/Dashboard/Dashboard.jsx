@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAppContext } from "../../context/AppContext";
 import axios from "../../config/axios";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import {
   Home,
@@ -10,14 +10,14 @@ import {
   LogOut,
   Menu,
   X,
-  Award,
   Activity,
   Bot,
   Waves,
   Sun,
   Moon,
   HeartHandshake,
-  BookAIcon
+  BookAIcon,
+  Settings,
 } from "lucide-react";
 import { DashboardMain } from "../../components/Dashboard/DashboardMain";
 import MoodCheck from "../../components/Dashboard/MoodCheck";
@@ -27,6 +27,7 @@ import Soundscape from "../../components/Dashboard/Soundscape";
 import SelfCarePlanner from "../../components/Dashboard/SelfCarePlanner/SelfCarePlanner";
 import Journal from "../../components/Dashboard/Journal/Journal";
 import Logo from "../../components/Favicon/Logo";
+
 
 export const Dashboard = () => {
   const {
@@ -42,6 +43,12 @@ export const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Dropdown state and ref for avatar menu
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const navigate = useNavigate();
 
   //Dummy Data
   useEffect(() => {
@@ -77,6 +84,23 @@ export const Dashboard = () => {
     loadData();
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    if (dropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
   const sidebarItems = [
     { id: "dashboard", label: "Dashboard", icon: Home },
     { id: "mood-check", label: "Mood Check", icon: Heart },
@@ -84,7 +108,7 @@ export const Dashboard = () => {
     { id: "therapist", label: "Therapist", icon: Bot },
     { id: "habits", label: "Habits", icon: Target },
     { id: "soundscape", label: "Soundscape", icon: Waves },
-    {id: "journal", label : "Journal", icon: BookAIcon},
+    { id: "journal", label: "Journal", icon: BookAIcon },
     { id: "self-care", label: "Self-care", icon: HeartHandshake },
   ];
 
@@ -98,6 +122,12 @@ export const Dashboard = () => {
     } catch (error) {
       toast.error(error.message);
     }
+  };
+
+  // Called from dropdown logout click
+  const onLogout = async () => {
+    setDropdownOpen(false);
+    await handleLogout();
   };
 
   const toggleDarkMode = () => {
@@ -119,7 +149,7 @@ export const Dashboard = () => {
       case "soundscape":
         return <Soundscape mood={avgMoodLevel} stressLevel={avgStressLevel} />;
       case "journal":
-        return <Journal />
+        return <Journal />;
       case "self-care":
         return (
           <SelfCarePlanner mood={avgMoodLevel} stressLevel={avgStressLevel} />
@@ -163,9 +193,7 @@ export const Dashboard = () => {
           isDarkMode
             ? "bg-gray-900 text-gray-200"
             : "bg-white text-gray-900 border-r border-gray-200"
-        } ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 shadow-xl`}
+        } ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 shadow-xl`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 cursor-pointer">
@@ -261,59 +289,71 @@ export const Dashboard = () => {
                 className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 aria-label="Open sidebar"
               >
-                <Menu
-                  className={`w-5 h-5 ${
-                    isDarkMode ? "text-gray-200" : "text-gray-600"
-                  }`}
-                />
+                <Menu className="w-6 h-6" />
               </button>
-              <div>
-                <h1 className="text-2xl font-bold capitalize">
-                  {activeTab.replace("-", " ")}
-                </h1>
-                <p
-                  className={`${
-                    isDarkMode ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  {new Date().toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-              </div>
-            </div>
 
-            <div className="flex items-center space-x-4">
-              {/* User avatar */}
-              <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                {userData?.name
-                  ?.split(" ")
-                  .map((n) => n[0])
-                  .join("") || ""}
-              </div>
-
-              {/* Dark mode toggle at top right of sidebar header */}
               <button
                 onClick={toggleDarkMode}
-                className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
                 aria-label="Toggle dark mode"
-                title="Toggle dark mode"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 {isDarkMode ? (
-                  <Sun className="w-6 h-6 text-yellow-400" />
+                  <Sun className="w-6 h-6" />
                 ) : (
-                  <Moon className="w-6 h-6 text-gray-700" />
+                  <Moon className="w-6 h-6" />
                 )}
               </button>
+            </div>
+
+            {/* User avatar dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setDropdownOpen((prev) => !prev)}
+                className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-full p-1"
+                aria-haspopup="true"
+                aria-expanded={dropdownOpen}
+              >
+                <div className="w-9 h-9 bg-gradient-to-br from-sky-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-lg select-none">
+                  {userData?.name
+                    ?.split(" ")
+                    .map((n) => n[0])
+                    .join("") || ""}
+                </div>
+              </button>
+
+              {dropdownOpen && (
+                <div
+                  className={`absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50`}
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="user-menu"
+                >
+                  <Link
+                    to="/settings"
+                    className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    role="menuitem"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    <Settings className="w-5 h-5 mr-2" />
+                    Settings
+                  </Link>
+
+                  <button
+                    onClick={onLogout}
+                    className="w-full text-left flex items-center px-4 py-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-700 dark:text-red-400"
+                    role="menuitem"
+                  >
+                    <LogOut className="w-5 h-5 mr-2" />
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </header>
 
-        {/* Main dashboard content */}
-        <main className="p-6 flex-grow overflow-auto">{renderContent()}</main>
+        {/* Render selected tab content */}
+        <main className="flex-1 p-6 overflow-y-auto">{renderContent()}</main>
       </div>
     </div>
   );

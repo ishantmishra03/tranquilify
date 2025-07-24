@@ -16,6 +16,7 @@ import Blogs from "./pages/Blogs/Blogs";
 import BlogPage from "./components/Blogs/BlogPage";
 
 import ProtectedRoute from "./config/ProtectedRoute";
+import Settings from "./pages/Settings/Settings";
 
 const App = () => {
   const { setIsAuthenticated, setLoading } = useAppContext();
@@ -42,6 +43,7 @@ const App = () => {
         <Route path="/auth" element={<Auth />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/blogs/:id" element={<BlogPage />} />
+        <Route path="/settings" element={<Settings />} />
         <Route
           path="/dashboard"
           element={
