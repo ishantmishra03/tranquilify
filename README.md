@@ -211,6 +211,8 @@ IMAGEKIT_PUBLIC_KEY="your_imagekit_public_key"
 IMAGEKIT_PRIVATE_KEY="your_imagekit_private_key"
 IMAGEKIT_URL_ENDPOINT="your_imagekit_url_endpoint"
 
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5174,.....
+
 ```
 
 **6. Launch Application**

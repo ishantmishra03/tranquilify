@@ -25,7 +25,9 @@ import resetRouter from './routes/reset.routes.js';
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://tran-test.netlify.app']
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : [];
 
 const corsOptions = {
   origin: (origin, callback) => {

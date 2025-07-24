@@ -15,10 +15,10 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": [
-    "http://localhost:5173",
-    "https://tranquilify.vercel.app"
-]}})
+
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+
+CORS(app, resources={r"/*": {"origins": allowed_origins}})
 
 
 #Format : {ip_address: {route: last_timestamp}}
@@ -374,4 +374,6 @@ def get_daily_quotes():
 
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host="0.0.0.0", port=port, debug=False)  
+
