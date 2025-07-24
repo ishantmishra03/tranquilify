@@ -20,11 +20,11 @@
 
 ## 📋 Table of Contents
 
-- [Tech Stack](#tech-stack)
-- [Features](#features)
-- [Demo Video](#demo-video)
-- [How to Use](#how-to-use)
-- [Conclusion](#conclusion)
+- [Tech Stack](#-tech-stack)
+- [Features](#-features)
+- [Demo Video](#-demo-video)
+- [How to Use](#-how-to-use)
+- [Conclusion](#-conclusion)
 
 ---
 
