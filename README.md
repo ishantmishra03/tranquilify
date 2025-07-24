@@ -20,11 +20,11 @@
 
 ## 📋 Table of Contents
 
-- [Tech Stack](#tech-stack)
-- [Features](#features)
-- [Demo Video](#demo-video)
-- [How to Use](#how-to-use)
-- [Conclusion](#conclusion)
+- [Tech Stack](#-tech-stack)
+- [Features](#-features)
+- [Demo Video](#-demo-video)
+- [How to Use](#-how-to-use)
+- [Conclusion](#-conclusion)
 
 ---
 
@@ -210,8 +210,6 @@ JWT_SECRET="your_jwt_secret"
 IMAGEKIT_PUBLIC_KEY="your_imagekit_public_key"
 IMAGEKIT_PRIVATE_KEY="your_imagekit_private_key"
 IMAGEKIT_URL_ENDPOINT="your_imagekit_url_endpoint"
-
-ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5174,.....
 
 ```
 
