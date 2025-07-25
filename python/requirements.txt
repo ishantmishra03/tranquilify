@@ -1,9 +1,0 @@
-flask
-flask-cors
-python-dotenv
-requests
-deepface
-tensorflow
-opencv-python
-numpy
-gunicorn

@@ -2,7 +2,6 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import cron from 'node-cron';
 
 
 import MoodLog from './models/mood.models.js';
@@ -19,6 +18,7 @@ import moodRouter from './routes/mood.routes.js';
 import pdfRouter from './routes/pdf.routes.js';
 import journalRouter from './routes/journal.routes.js';
 import blogRouter from './routes/blog.routes.js';
+import aiRouter from './routes/ai.routes.js';
 
 import adminRouter from './routes/admin.routes.js';
 import resetRouter from './routes/reset.routes.js';
@@ -29,7 +29,6 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
   : [];
 
-console.log(allowedOrigins);
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -55,6 +54,7 @@ app.use('/api/mood', moodRouter);
 app.use('/api/pdf', pdfRouter);
 app.use('/api/journal', journalRouter);
 app.use('/api/blog', blogRouter);
+app.use('/api/ai', aiRouter);
 
 //Admin
 app.use('/api/admin', adminRouter);
@@ -66,18 +66,6 @@ app.get('/', (req, res) => {
   res.send('SERVER WORKING !');
 });
 
-
-//CleanUp Code
-cron.schedule("0 0 * * 1", async () => {
-  try {
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    await MoodLog.deleteMany({ createdAt: { $lte: sevenDaysAgo } });
-    await StressAssessment.deleteMany({ createdAt: { $lte: sevenDaysAgo } });
-    console.log("✅ Old mood and stress data cleared.");
-  } catch (err) {
-    console.error("❌ Failed to clear data:", err);
-  }
-});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

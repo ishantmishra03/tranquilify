@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Activity, CheckCircle, Save, Sparkles, TrendingDown } from 'lucide-react';
 import axios from '../../config/axios'; 
-import api from 'axios';
 import { toast } from 'react-hot-toast';
 import { StressGraph } from '../Figure/StressGraph';
-import { useAppContext } from '../../context/AppContext'; // ✅ added
+import { useAppContext } from '../../context/AppContext'; 
 
 export const StressForm = () => {
-  const { isDarkMode } = useAppContext(); // ✅ use dark mode
+  const { isDarkMode } = useAppContext(); 
   const [stressLevel, setStressLevel] = useState(null);
   const [stressFactors, setStressFactors] = useState([]);
   const [customFactor, setCustomFactor] = useState('');
@@ -46,7 +45,7 @@ export const StressForm = () => {
     }
     setIsSuggesting(true);
     try {
-      const res = await api.post('http://localhost:5001/suggest-coping', {
+      const res = await axios.post('/api/ai/suggest-coping', {
         stress_level: stressLevel,
         stress_factors: stressFactors,
         symptoms,

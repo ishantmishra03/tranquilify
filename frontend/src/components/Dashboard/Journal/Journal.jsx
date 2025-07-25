@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import api from "../../../config/axios";
+import axios from "../../../config/axios";
 import { Notebook, Sparkles, Trash2 } from "lucide-react";
 import { useAppContext } from "../../../context/AppContext";
 import { toast } from "react-hot-toast";
@@ -14,7 +13,7 @@ const Journal = () => {
 
   const fetchJournals = async () => {
     try {
-      const {data} = await api.get("/api/journal");
+      const {data} = await axios.get("/api/journal");
       if (data.success) {
         setJournals(data.journals);
       }
@@ -26,7 +25,7 @@ const Journal = () => {
   const saveJournal = async () => {
     if (!content.trim()) return;
     try {
-      const {data} = await api.post("/api/journal", { content });
+      const {data} = await axios.post("/api/journal", { content });
       if (data.success) {
         toast.success(data.message);
         setContent("");
@@ -39,7 +38,7 @@ const Journal = () => {
 
   const deleteJournal = async (id) => {
     try {
-      const {data} = await api.delete(`/api/journal/${id}`);
+      const {data} = await axios.delete(`/api/journal/${id}`);
       if (data.success) {
         toast.success(data.message);
         setJournals((prev) => prev.filter((j) => j._id !== id));
@@ -53,7 +52,7 @@ const Journal = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND2_URL}/journal-prompt`,
+        "/api/ai/journal-prompt",
         { journals: journals.map((j) => j.content) }
       );
       setPrompt(res.data.prompt || "No prompt returned.");

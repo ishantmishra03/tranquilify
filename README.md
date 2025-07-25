@@ -30,6 +30,9 @@
 
 ## 🛠️ Tech Stack
 
+```
+# MERN STACK 
+```
 ### 🎨 Frontend Technologies
 ![React](https://skillicons.dev/icons?i=react) ![TailwindCSS](https://skillicons.dev/icons?i=tailwind) ![JavaScript](https://skillicons.dev/icons?i=js) ![HTML5](https://skillicons.dev/icons?i=html) ![CSS3](https://skillicons.dev/icons?i=css)
 
@@ -40,10 +43,9 @@
 - **Light/Dark Mode Support** - Adaptive theming for user comfort
 
 ### ⚙️ Backend Technologies
-![Node.js](https://skillicons.dev/icons?i=nodejs) ![Express](https://skillicons.dev/icons?i=express) ![Python](https://skillicons.dev/icons?i=python) ![Flask](https://skillicons.dev/icons?i=flask)
+![Node.js](https://skillicons.dev/icons?i=nodejs) ![Express](https://skillicons.dev/icons?i=express) ![JavaScript](https://skillicons.dev/icons?i=js)
 
 - **Node.js + Express.js** - Primary REST API server
-- **Python Flask** - Secondary backend for AI processing
 - **JWT Authentication** - Secure token-based authentication
 - **Cookie Management** - Persistent session handling
 
@@ -53,12 +55,6 @@
 
 - **MongoDB Atlas** - Cloud-based NoSQL database
 - **ImageKit** - Optimized image upload and storage solution
-
-### 🤖 AI Processing
-![Python](https://skillicons.dev/icons?i=python)
-
-- **DeepFace AI** - Advanced facial emotion recognition
-- **Natural Language Processing** - AI-powered therapeutic responses
 
 ---
 
@@ -166,17 +162,6 @@ cd ../backend
 npm install
 ```
 
-**4. AI Backend Setup**
-```bash
-cd ../python
-
-# (Virtual Environment)
-python -m venv venv
-venv/Scripts/activate # ( powershell )
-
-pip install -r requirements.txt
-```
-
 **5. Environment Configuration**
 ### 1. **Frontend `.env` File**
 ```env
@@ -188,12 +173,6 @@ VITE_BACKEND2_URL="http://localhost:5001"
 VITE_CDN_URL="https://cdn.jsdelivr.net/gh/ishantdev379/audio"
 ```
 
-### 2. **Python `.env` File**
-```env
-# Python-related environment variables
-GROQ_API_KEY="your_groq_api_key"
-
-```
 ### 3. **Backend(NodeJS) `.env` File**
 ```env
 # Backend Environment Variables
@@ -211,6 +190,7 @@ IMAGEKIT_PUBLIC_KEY="your_imagekit_public_key"
 IMAGEKIT_PRIVATE_KEY="your_imagekit_private_key"
 IMAGEKIT_URL_ENDPOINT="your_imagekit_url_endpoint"
 
+GROQ_API_KEY="your_groq_api_key
 ```
 
 **6. Launch Application**
@@ -220,11 +200,6 @@ cd frontend && npm run dev
 
 # Terminal 2 - Node Backend (Port 5000)
 cd backend && npm run dev
-
-# Terminal 3 - Flask AI Backend (Port 5001)
-1) cd python 
-2) venv/Scripts/activate # ( powershell )
-3) python app.py
 ```
 
 ### 📱 User Journey

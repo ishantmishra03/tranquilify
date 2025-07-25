@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import axios from "../../config/axios";
 import {
   Send,
   Brain,
@@ -104,7 +104,7 @@ export default function Therapist() {
       };
 
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND2_URL}/chat`,
+        "/api/ai/chat",
         payload
       );
 

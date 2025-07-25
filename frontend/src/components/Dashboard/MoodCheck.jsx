@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import axios from '../../config/axios';
-import api from "axios";
+import api from "../../config/axios";
 import { Smile, Camera, RefreshCcw, Loader2, Check, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAppContext } from '../../context/AppContext'; 
@@ -59,7 +59,7 @@ const MoodCheck = () => {
     const dataURL = canvas.toDataURL('image/jpeg');
 
     try {
-      const { data } = await api.post(`${import.meta.env.VITE_BACKEND2_URL}/analyze`, {
+      const { data } = await api.post("/api/mood/analyze", {
         image: dataURL,
       });
 

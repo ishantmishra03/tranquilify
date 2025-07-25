@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../config/axios";
 import { useAppContext } from "../../context/AppContext";
 import { toast } from "react-hot-toast";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -29,7 +29,7 @@ export default function DailyQuotes() {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND2_URL}/daily-quotes`); 
+      const res = await axios.get("/api/ai/daily-quotes"); 
 
       if (!res.data.success) {
         throw new Error("Failed to load quotes");
