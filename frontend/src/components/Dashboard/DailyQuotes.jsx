@@ -29,7 +29,7 @@ export default function DailyQuotes() {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get("http://localhost:5001/daily-quotes"); // Change to your deployed backend if needed
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND2_URL}/daily-quotes`); 
 
       if (!res.data.success) {
         throw new Error("Failed to load quotes");

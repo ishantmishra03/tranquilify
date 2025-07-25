@@ -38,6 +38,15 @@ def is_rate_limited(ip, route):
     rate_limit[ip] = user_limits
     return False
 
+#Health CheckUp Route
+@app.route('/')
+def health_check():
+    return jsonify({
+        "status": "ok",
+        "message": "Health check passed. App is running!"
+    })
+
+
 @app.route('/analyze', methods=['POST'])
 def analyze_mood():
     ip = request.remote_addr

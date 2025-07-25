@@ -2,8 +2,8 @@ flask
 flask-cors
 python-dotenv
 requests
-deepface==0.0.93
-tensorflow==2.13.0
+deepface
+tensorflow
 opencv-python
 numpy
-
+gunicorn
