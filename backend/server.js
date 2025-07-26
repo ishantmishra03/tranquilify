@@ -19,6 +19,7 @@ import pdfRouter from './routes/pdf.routes.js';
 import journalRouter from './routes/journal.routes.js';
 import blogRouter from './routes/blog.routes.js';
 import aiRouter from './routes/ai.routes.js';
+import agentRouter from './routes/agent.routes.js';
 
 import adminRouter from './routes/admin.routes.js';
 import resetRouter from './routes/reset.routes.js';
@@ -55,6 +56,7 @@ app.use('/api/pdf', pdfRouter);
 app.use('/api/journal', journalRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/ai', aiRouter);
+app.use('/api/agent', agentRouter);
 
 //Admin
 app.use('/api/admin', adminRouter);

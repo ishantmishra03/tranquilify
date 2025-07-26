@@ -1,23 +1,18 @@
-import axios from 'axios';
-
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-
-const headers = {
-  'Authorization': `Bearer ${GROQ_API_KEY}`,
-  'Content-Type': 'application/json',
-};
+import { GroqService } from "../services/groqService.js";
 
 export const suggestCoping = async (req, res) => {
   try {
     const { stress_level, stress_factors, symptoms } = req.body;
 
     if (typeof stress_level !== 'number') {
-      return res.status(400).json({ success: false, message: 'Stress level is required and must be a number' });
+      return res.status(400).json({ success: false, message: 'Stress level must be a number' });
     }
-    if (!Array.isArray(stress_factors) || stress_factors.length === 0) {
+
+    if (!Array.isArray(stress_factors) || !stress_factors.length) {
       return res.status(400).json({ success: false, message: 'At least one stress factor is required' });
     }
-    if (!Array.isArray(symptoms) || symptoms.length === 0) {
+
+    if (!Array.isArray(symptoms) || !symptoms.length) {
       return res.status(400).json({ success: false, message: 'At least one symptom is required' });
     }
 
@@ -30,77 +25,48 @@ You are a mental wellness AI assistant. A user reports:
 Suggest 5 short, practical coping strategies. Return ONLY a JSON array of strings. No explanations.
 `;
 
-    const payload = {
-      model: 'llama3-8b-8192',
-      messages: [
-        { role: 'system', content: 'You are a helpful mental wellness assistant.' },
-        { role: 'user', content: prompt },
-      ],
-      temperature: 0.7,
+    const content = await GroqService.chat({
+      system: "You are a helpful mental wellness assistant.",
+      user: prompt,
       max_tokens: 300,
-    };
+    });
 
-    const response = await axios.post('https://api.groq.com/openai/v1/chat/completions', payload, { headers });
-
-    if (response.status !== 200) {
-      return res.status(500).json({ success: false, message: 'Failed to get response from Groq' });
-    }
-
-    const content = response.data.choices[0].message.content.trim();
     const strategies = JSON.parse(content);
-
-    if (!Array.isArray(strategies)) {
-      throw new Error('Invalid format from Groq response');
-    }
-
     return res.json({ success: true, coping_strategies: strategies });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message || 'Internal Server Error' });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message || "Internal server error" });
   }
 };
 
-//AI Therapist chat
 export const aiTherapistChat = async (req, res) => {
   try {
     const { messages } = req.body;
     if (!Array.isArray(messages)) {
-      return res.status(400).json({ success: false, message: 'Messages must be a list' });
+      return res.status(400).json({ success: false, message: 'Messages must be an array' });
     }
 
-    const payload = {
-      model: 'llama3-8b-8192',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a compassionate AI therapist. Respond with empathy and encouragement. Always format your response in clean, readable **Markdown**. Use:
+    const systemPrompt = `
+You are a compassionate AI therapist. Respond with empathy and encouragement. Always format your response in clean, readable **Markdown**. Use:
 - bullet points for lists
 - bold text for emphasis
 - headers where appropriate
 - line breaks between points
+Never include raw HTML. Markdown only.`;
 
-Never include raw HTML. Markdown only.`,
-        },
-        ...messages,
-      ],
-      temperature: 0.7,
+    const content = await GroqService.chatWithMessages({
+      system: systemPrompt,
+      messages,
       max_tokens: 500,
-    };
-
-    const response = await axios.post('https://api.groq.com/openai/v1/chat/completions', payload, { headers });
-
-    if (response.status !== 200) {
-      return res.status(500).json({ success: false, message: 'Failed to get response from Groq' });
-    }
-
-    const content = response.data.choices[0].message.content.trim();
+    });
 
     return res.json({ success: true, reply: content });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message || 'Internal Server Error' });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message || "Internal server error" });
   }
 };
 
-//Self Care Plan
 export const selfCarePlan = async (req, res) => {
   try {
     const { mood, stress_level, habits = [] } = req.body;
@@ -122,121 +88,77 @@ Suggest a calming and practical **daily self-care plan** with 4-5 bullet points.
 - Sleep hygiene
 - Mental rest
 
-Keep it concise and clear in **plain text**, not JSON. and dont add further 3rd party apps examples . If suggested breathing suggest tranquilify breathing exercise.
+Keep it concise and clear in **plain text**, not JSON. and don't add third-party app names. If suggesting breathing, mention "Tranquilify breathing exercise".
 `;
 
-    const payload = {
-      model: 'llama3-8b-8192',
-      messages: [
-        { role: 'system', content: 'You are a helpful wellness coach.' },
-        { role: 'user', content: prompt },
-      ],
-      temperature: 0.7,
+    const content = await GroqService.chat({
+      system: "You are a helpful wellness coach.",
+      user: prompt,
       max_tokens: 400,
-    };
+    });
 
-    const response = await axios.post('https://api.groq.com/openai/v1/chat/completions', payload, { headers });
+    return res.json({ success: true, plan: content });
 
-    if (response.status !== 200) {
-      return res.status(500).json({ success: false, message: 'Failed to get response from Groq' });
-    }
-
-    const plan = response.data.choices[0].message.content.trim();
-
-    return res.json({ success: true, plan });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message || 'Internal Server Error' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message || "Internal server error" });
   }
 };
 
-//Journal Prompt
 export const journalPrompt = async (req, res) => {
   try {
     const { journals } = req.body;
-
     if (!Array.isArray(journals) || journals.length === 0) {
       return res.status(400).json({ success: false, message: 'Journals list is required' });
     }
 
-    const journalText = journals.join('\n\n');
-
     const prompt = `
 You are a thoughtful and empathetic mental wellness assistant.
 
-Given the following journal entries by a user:
-${journalText}
+Given the following journal entries:
+${journals.join('\n\n')}
 
-Please generate a concise and insightful reflection summary focusing on the user's mood patterns, emotional trends, and any recurring themes.
+Generate a short, insightful reflection summary (3-5 bullet points) highlighting:
+- Mood patterns
+- Emotional trends
+- Recurring themes
 
-Provide 3-5 bullet points in plain text that the user can reflect on.
-
-Return only the reflection text, no JSON, no explanations.
+Return plain text only. No explanations, no JSON.
 `;
 
-    const payload = {
-      model: 'llama3-8b-8192',
-      messages: [
-        { role: 'system', content: 'You are a helpful mental wellness assistant.' },
-        { role: 'user', content: prompt },
-      ],
-      temperature: 0.7,
+    const content = await GroqService.chat({
+      system: "You are a helpful mental wellness assistant.",
+      user: prompt,
       max_tokens: 400,
-    };
+    });
 
-    const response = await axios.post('https://api.groq.com/openai/v1/chat/completions', payload, { headers });
+    return res.json({ success: true, prompt: content });
 
-    if (response.status !== 200) {
-      return res.status(500).json({ success: false, message: 'Failed to get response from Groq' });
-    }
-
-    const reflection = response.data.choices[0].message.content.trim();
-
-    return res.json({ success: true, prompt: reflection });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message || 'Internal Server Error' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message || "Internal server error" });
   }
 };
 
-//Daily Quotes
 export const getDailyQuotes = async (req, res) => {
   try {
     const prompt = `
 Provide 3 short motivational or inspirational quotes related with mental wellness. 
-Respond ONLY as a JSON array of objects, each with 'content' and 'author' fields. 
-Do not include any other text or formatting.
+Respond ONLY as a JSON array of objects, each with 'content' and 'author' fields. No other text or formatting.
 `;
 
-    const payload = {
-      model: 'llama3-8b-8192',
-      messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: prompt },
-      ],
-      temperature: 0.7,
+    const content = await GroqService.chat({
+      system: "You are a helpful assistant.",
+      user: prompt,
       max_tokens: 300,
-    };
+    });
 
-    const response = await axios.post('https://api.groq.com/openai/v1/chat/completions', payload, { headers });
-
-    if (response.status !== 200) {
-      return res.status(500).json({ success: false, message: 'Failed to get quotes from Groq' });
-    }
-
-    const rawContent = response.data.choices[0].message.content.trim();
-
-    let quotes;
-    try {
-      quotes = JSON.parse(rawContent);
-    } catch {
-      return res.status(500).json({ success: false, message: 'Invalid response format from Groq' });
-    }
-
+    const quotes = JSON.parse(content);
     if (!Array.isArray(quotes) || !quotes.every(q => q.content && q.author)) {
-      return res.status(500).json({ success: false, message: 'Malformed quote structure' });
+      throw new Error("Invalid quote format");
     }
 
     return res.json({ success: true, quotes });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message || 'Internal Server Error' });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message || "Internal server error" });
   }
 };

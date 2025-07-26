@@ -18,6 +18,7 @@ import axios from "../../config/axios";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import DailyAlert from "../Popups/DailyAlert";
+import AgentCard from "./AgentCard";
 
 export const DashboardMain = ({ data }) => {
   const navigate = useNavigate();
@@ -156,6 +157,7 @@ export const DashboardMain = ({ data }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <MoodGraph />
         <StressGraph />
+        <AgentCard/>
       </div>
 
       {/* AI Tip of the Day */}
