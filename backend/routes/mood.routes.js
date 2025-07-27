@@ -14,4 +14,5 @@ moodRouter.get('/user', protect, getMoodData);
 moodRouter.post('/analyze', protect, analyzeMood);
 
 
+
 export default moodRouter;

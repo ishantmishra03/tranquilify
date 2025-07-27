@@ -1,26 +1,5 @@
 import mongoose from 'mongoose';
 import MoodLog from '../models/mood.models.js';
-import * as faceapi from 'face-api.js';
-import { Canvas, Image, ImageData } from 'canvas';
-import path from 'path';
-
-// Patch face-api.js environment for Node.js
-faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
-
-const MODEL_PATH = path.join(process.cwd(), 'faceapi-models');
-
-
-let modelsLoaded = false;
-
-// Load face-api.js models only once
-export async function loadModels() {
-  if (!modelsLoaded) {
-    await faceapi.nets.tinyFaceDetector.loadFromDisk(MODEL_PATH);
-    await faceapi.nets.faceExpressionNet.loadFromDisk(MODEL_PATH);
-    modelsLoaded = true;
-    console.log('Face-api.js models loaded');
-  }
-}
 
 // Add new mood log for a user
 export const addNewMoodData = async (req, res) => {
@@ -113,39 +92,53 @@ export const getMoodData = async (req, res) => {
   }
 };
 
-// Analyze mood from base64 image using face-api.js
-export async function analyzeMood(req, res) {
-  try {
-    if (!modelsLoaded) await loadModels();
+//Analyze Mood
+import axios from 'axios';
 
-    const { image } = req.body;
+export const analyzeMood = async (req, res) => {
+  try {
+    const { image } = req.body; 
     if (!image) {
       return res.status(400).json({ success: false, message: 'No image provided' });
     }
 
     
-    const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
-    const imgBuffer = Buffer.from(base64Data, 'base64');
+    const base64Image = image.split(',')[1];
 
-   
-    const img = new Image();
-    img.src = imgBuffer;
+    const apiKey = process.env.FACEPP_API_KEY;
+    const apiSecret = process.env.FACEPP_API_SECRET;
 
-    
-    const detection = await faceapi
-      .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
-      .withFaceExpressions();
+    const params = new URLSearchParams();
+    params.append('api_key', apiKey);
+    params.append('api_secret', apiSecret);
+    params.append('image_base64', base64Image);
+    params.append('return_attributes', 'emotion');
 
-    if (!detection) {
-      return res.json({ success: true, emotion: 'No face detected' });
+    const response = await axios.post(
+      'https://api-us.faceplusplus.com/facepp/v3/detect',
+      params.toString(),
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      }
+    );
+
+    const data = response.data;
+
+    if (!data.faces || data.faces.length === 0) {
+      return res.status(200).json({ success: false, message: 'No face detected' });
     }
 
-    const expressions = detection.expressions;
-    const dominantEmotion = Object.keys(expressions).reduce((a, b) => (expressions[a] > expressions[b] ? a : b));
+    const emotions = data.faces[0].attributes.emotion;
 
-    return res.json({ success: true, emotion: dominantEmotion });
+    // Find dominant emotion (highest score)
+    const dominantEmotion = Object.entries(emotions).reduce((max, curr) =>
+      curr[1] > max[1] ? curr : max
+    )[0];
+
+    return res.status(200).json({ success: true, emotion: dominantEmotion.toLowerCase() });
   } catch (error) {
-    console.error('Analyze Mood Error:', error);
-    return res.status(500).json({ success: false, message: error.message });
+    console.error('Face++ API error:', error.response?.data || error.message);
+    return res.status(500).json({ success: false, message: 'Emotion analysis failed' });
   }
-}
+};
+

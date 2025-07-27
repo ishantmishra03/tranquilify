@@ -84,11 +84,12 @@
 - **💭 Emotional Processing**: Transform thoughts into insights with AI guidance
 - **📊 Growth Tracking**: Monitor personal development over time
 
-### 🤖 **AI Therapist**
+### 🤖 **AI Therapist + Live Call Agent**
 - **💬 24/7 Chat Support**: Always available AI-powered therapeutic conversations
 - **🎤 Voice Interaction**: Natural voice-based therapy sessions
 - **🎯 Personalized Responses**: Context-aware mental health support
 - **🧠 Therapeutic Techniques**: Evidence-based therapeutic approaches
+- **You can have live call sessions with AI agent**: Provides best user support for mental wellness
 
 ### 🎵 **Healing Soundscapes**
 - **🎶 Personalized Music Recommendations**: Curated healing music based on your emotional data
@@ -171,6 +172,10 @@ VITE_BACKEND2_URL="http://localhost:5001"
 
 # CDN URL for media
 VITE_CDN_URL="https://cdn.jsdelivr.net/gh/ishantdev379/audio"
+
+# VAPI ( Real Time Calling AI Agent )
+VITE_VAPI_API_KEY=""
+VITE_VAPI_ASSISTANT_ID=""
 ```
 
 ### 3. **Backend(NodeJS) `.env` File**
@@ -210,8 +215,9 @@ cd backend && npm run dev
 4. **🎯 Build Habits** - Create and track wellness routines
 5. **📝 Journal Daily** - Reflect and receive AI insights
 6. **🤖 Chat with AI** - Get therapeutic support anytime
-7. **🎵 Listen to Soundscapes** - Enjoy personalized healing music
-8. **📈 View Analytics** - Analyze patterns and track progress
+7. **🤖 RealTime Call with AI** - Get therapeutic support anytime in live call
+8. **🎵 Listen to Soundscapes** - Enjoy personalized healing music
+9. **📈 View Analytics** - Analyze patterns and track progress
 
 **( Improve Mental Health )**
 ---
