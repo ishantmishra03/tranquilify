@@ -38,7 +38,7 @@ const Hero = () => {
   );
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative z-10 min-h-screen overflow-hidden">
       <div 
         className="absolute inset-0 opacity-30"
         style={{

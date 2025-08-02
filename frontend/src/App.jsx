@@ -11,6 +11,7 @@ import StressData from "./components/Dashboard/StressData";
 
 import { MoodGraphPage } from "./pages/Figure/MoodGraphPage";
 import { StressGraphPage } from "./pages/Figure/StressGraphPage";
+import AmbientRoom from "./pages/Ambientroom";
 
 import Blogs from "./pages/Blogs/Blogs";
 import BlogPage from "./components/Blogs/BlogPage";
@@ -45,7 +46,7 @@ const App = () => {
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/blogs/:id" element={<BlogPage />} />
         <Route path="/settings" element={<Settings />} />
-       
+        <Route path="/ambient-room" element={<AmbientRoom />}/>
         <Route
           path="/dashboard"
           element={

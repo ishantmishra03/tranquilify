@@ -107,20 +107,28 @@ Keep it concise and clear in **plain text**, not JSON. and don't add third-party
 export const journalPrompt = async (req, res) => {
   try {
     const { journals } = req.body;
-    if (!Array.isArray(journals) || journals.length === 0) {
-      return res.status(400).json({ success: false, message: 'Journals list is required' });
-    }
+    // if (!Array.isArray(journals) || journals.length === 0) {
+    //   return res.status(400).json({ success: false, message: 'Journals list is required' });
+    // }
+
+    // Format journals with date and content
+    const formattedEntries = journals.map((j, idx) => {
+      const date = new Date(j.createdAt).toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+      return `Entry ${idx + 1} - ${date}:\n${j.content}`;
+    }).join('\n\n');
 
     const prompt = `
-You are a thoughtful and empathetic mental wellness assistant.
+You are a thoughtful and empathetic mental wellness assistant. Also give only for those journals if 7 days ago else give plain text message "No journal in rectnt 7 days"
 
 Given the following journal entries:
-${journals.join('\n\n')}
+${formattedEntries}
 
-Generate a short, insightful reflection summary (3-5 bullet points) highlighting:
-- Mood patterns
-- Emotional trends
-- Recurring themes
+Generate a short, insightful reflection summary which user will be able to understand and make him feel emotionally connected
 
 Return plain text only. No explanations, no JSON.
 `;
@@ -137,6 +145,7 @@ Return plain text only. No explanations, no JSON.
     res.status(500).json({ success: false, message: err.message || "Internal server error" });
   }
 };
+
 
 export const getDailyQuotes = async (req, res) => {
   try {

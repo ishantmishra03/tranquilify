@@ -60,56 +60,50 @@
 
 ## ✨ Features
 
-### 🎭 **Intelligent Mood Tracking**
-- **🤖 AI Camera Detection**: Advanced mood analysis using DeepFace AI technology
-- **✋ Manual Entry Option**: Traditional mood logging with customizable parameters
-- **📊 Visual Analytics**: Interactive mood graphs to track emotional patterns over time
-- **🔍 Pattern Recognition**: Identify emotional trends and triggers
+### **Intelligent Mood Tracking**
+- **AI Camera Detection**: Advanced mood analysis using FaceApp AI technology
+- **Manual Entry Option**: Traditional mood logging with customizable parameters
+- **Visual Analytics**: Interactive mood graphs to track emotional patterns over time
+- **Pattern Recognition**: Identify emotional trends and triggers
 
-### 📈 **Comprehensive Stress Management**
-- **📝 Stress Assessment Forms**: Detailed stress level evaluation tools
-- **📊 Stress Analytics**: Visual stress graphs showing patterns and triggers
-- **📄 Data Export**: Download your stress data for up to 7 days in PDF format
-- **💡 Insights Dashboard**: Understand how stress factors change over time
+### **Comprehensive Stress Management**
+- **Stress Assessment Forms**: Detailed stress level evaluation tools
+- **Stress Analytics**: Visual stress graphs showing patterns and triggers
+- **Data Export**: Download your stress data for up to 7 days in PDF format
+- **Insights Dashboard**: Understand how stress factors change over time
 
-### 🎯 **Habit & Self-Care Management**
-- **📋 Smart Habit Tracker**: Monitor and build positive daily habits
-- **🤖 AI-Powered Self-Care Planner**: Receive personalized 1-day wellness plans
-- **📈 Progress Visualization**: Track your consistency and celebrate milestones
-- **🏆 Goal Achievement**: Milestone celebrations and achievement tracking
+### **Habit & Self-Care Management**
+- **Smart Habit Tracker**: Monitor and build positive daily habits
+- **AI-Powered Self-Care Planner**: Receive personalized 1-day wellness plans
+- **Progress Visualization**: Track your consistency and celebrate milestones
+- **Goal Achievement**: Milestone celebrations and achievement tracking
 
-### 📝 **Reflective Journaling**
-- **📖 Personal Journal**: Document your daily emotional experiences
-- **🤖 AI Reflective Prompts**: Get thoughtful, personalized responses to your entries
-- **💭 Emotional Processing**: Transform thoughts into insights with AI guidance
-- **📊 Growth Tracking**: Monitor personal development over time
+### **Reflective Journaling**
+- **Personal Journal**: Document your daily emotional experiences
+- **AI Reflective Prompts**: Get thoughtful, personalized responses to your entries
+- **Emotional Processing**: Transform thoughts into insights with AI guidance
 
-### 🤖 **AI Therapist + Live Call Agent**
-- **💬 24/7 Chat Support**: Always available AI-powered therapeutic conversations
-- **🎤 Voice Interaction**: Natural voice-based therapy sessions
-- **🎯 Personalized Responses**: Context-aware mental health support
-- **🧠 Therapeutic Techniques**: Evidence-based therapeutic approaches
+### **AI Therapist + Live Call Agent**
+- **24/7 Chat Support**: Always available AI-powered therapeutic conversations
+- **Voice Interaction**: Natural voice-based therapy sessions
+- **Personalized Responses**: Context-aware mental health support
 - **You can have live call sessions with AI agent**: Provides best user support for mental wellness
 
-### 🎵 **Healing Soundscapes**
-- **🎶 Personalized Music Recommendations**: Curated healing music based on your emotional data
-- **🎭 Mood-Based Selection**: Soundscapes tailored to your current mental state
-- **🎧 Therapeutic Audio**: Mind-healing tracks for relaxation and focus
-- **😌 Relaxation Focus**: Stress relief soundtracks and ambient sounds
+### **Healing Soundscapes**
+- **Personalized Music Recommendations**: Curated healing music based on your emotional data
+- **Therapeutic Audio**: Mind-healing tracks for relaxation and focus
+- **Relaxation Focus**: Stress relief soundtracks and ambient sounds
 
-### 🌬️ **Mindfulness & Breathing**
-- **⏱️ 2-Minute Breathing Exercises**: Quick, effective stress relief techniques
-- **🧘‍♀️ Guided Sessions**: Step-by-step breathing instruction
-- **💆‍♂️ Instant Calm**: Accessible wellness tools for immediate relief
+### **Mindfulness & Breathing**
+- **2-Minute Breathing Exercises**: Quick, effective stress relief techniques
+- **Ambient Room**: Get deep into focus mode with 3D interactive background and music
 
-### 📚 **Mental Wellness Blog**
-- **👨‍⚕️ Expert Content**: Curated articles on mental health and wellness
-- **⚙️ Admin Panel**: Full CRUD operations for content management
-- **🌍 Community Access**: Educational resources available to all users
+### **Mental Wellness Blog**
+- **Expert Content**: Curated articles on mental health and wellness
+- **Admin Panel**: Full CRUD operations for content management
 
 ### 💫 **Daily Motivation**
 - **🤖 AI-Generated Quotes**: Personalized daily inspirational messages
-- **🎯 Contextual Motivation**: Quotes tailored to your current emotional state
 - **📅 Daily Delivery**: Fresh motivation every day
 
 ### ⚙️ **User Management & Privacy**
@@ -130,8 +124,9 @@
 
 
   **Click above image to see Tranquilify in action! 🚀**
-</div>
 
+  **(Note) Video was pre-recorded so it has lack of some features recording but you can try them on live iste as mentioned in features section .**
+</div>
 ---
 
 ## 🚀 How to Use
@@ -165,10 +160,9 @@ npm install
 
 **5. Environment Configuration**
 ### 1. **Frontend `.env` File**
-```env
+```bash
 # Backend URLs
 VITE_BACKEND_URL="http://localhost:5000"
-VITE_BACKEND2_URL="http://localhost:5001"
 
 # CDN URL for media
 VITE_CDN_URL="https://cdn.jsdelivr.net/gh/ishantdev379/audio"
@@ -179,7 +173,7 @@ VITE_VAPI_ASSISTANT_ID=""
 ```
 
 ### 3. **Backend(NodeJS) `.env` File**
-```env
+```bash
 # Backend Environment Variables
 PORT=5000
 NODE_ENV=development
@@ -195,7 +189,13 @@ IMAGEKIT_PUBLIC_KEY="your_imagekit_public_key"
 IMAGEKIT_PRIVATE_KEY="your_imagekit_private_key"
 IMAGEKIT_URL_ENDPOINT="your_imagekit_url_endpoint"
 
-GROQ_API_KEY="your_groq_api_key
+GROQ_API_KEY="your_groq_api_key"
+
+FACEPP_API_KEY="your_face_app_api_jey"
+FACEAPP_API_SECRET="your_face_app_api_secret"
+
+# Cors Prevntion
+ALLOWED_ORIGINS="url2, url2" 
 ```
 
 **6. Launch Application**
@@ -218,6 +218,8 @@ cd backend && npm run dev
 7. **🤖 RealTime Call with AI** - Get therapeutic support anytime in live call
 8. **🎵 Listen to Soundscapes** - Enjoy personalized healing music
 9. **📈 View Analytics** - Analyze patterns and track progress
+10. **Focus Mode** - Increase your focus and heal mind in Ambient Room
+11. **Blogs** - Know more about mental wellness through blogs
 
 **( Improve Mental Health )**
 ---

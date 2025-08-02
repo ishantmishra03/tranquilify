@@ -49,20 +49,23 @@ const Journal = () => {
   };
 
   const getReflectionPrompt = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        "/api/ai/journal-prompt",
-        { journals: journals.map((j) => j.content) }
-      );
-      setPrompt(res.data.prompt || "No prompt returned.");
-    } catch (err) {
-      console.error("Prompt generation error:", err);
-      setPrompt("Something went wrong. Try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    const res = await axios.post("/api/ai/journal-prompt", {
+      journals: journals.map((j) => ({
+        content: j.content,
+        createdAt: j.createdAt,
+      })),
+    });
+    setPrompt(res.data.prompt || "No prompt returned.");
+  } catch (err) {
+    console.error("Prompt generation error:", err);
+    setPrompt("Something went wrong. Try again later.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchJournals();

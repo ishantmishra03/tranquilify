@@ -19,6 +19,7 @@ import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import DailyAlert from "../Popups/DailyAlert";
 import AgentCard from "./AgentCard";
+import {AmbientCard} from "../AmbientRoom/AmbientCard";
 
 export const DashboardMain = ({ data }) => {
   const navigate = useNavigate();
@@ -139,6 +140,9 @@ export const DashboardMain = ({ data }) => {
         </Link>
       </div>
 
+
+    
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Mood Card */}
@@ -147,6 +151,8 @@ export const DashboardMain = ({ data }) => {
         {/* Stress Card */}
         <StressCard />
 
+        {/* AmbientRoom Card  */}
+          <AmbientCard />
        
       </div>
 
