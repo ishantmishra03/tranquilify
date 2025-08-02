@@ -61,7 +61,7 @@
 ## ✨ Features
 
 ### **Intelligent Mood Tracking**
-- **AI Camera Detection**: Advanced mood analysis using FacePlusPlus AI technology
+- **AI Camera Detection**: Advanced mood analysis using FaceApp AI technology
 - **Manual Entry Option**: Traditional mood logging with customizable parameters
 - **Visual Analytics**: Interactive mood graphs to track emotional patterns over time
 - **Pattern Recognition**: Identify emotional trends and triggers
@@ -125,7 +125,7 @@
 
   **Click above image to see Tranquilify in action! 🚀**
 
-  **(Note) Video was pre-recorded so it has lack of some features recording but you can try them on [Live Site](https://tranquilify.vercel.app) as mentioned in features section .**
+  **(Note) Video was pre-recorded so it has lack of some features recording but you can try them on live iste as mentioned in features section .**
 </div>
 ---
 
@@ -134,6 +134,7 @@
 ### 📋 Prerequisites
 - Code Editor
 - Node.js (v14 or higher)
+- Python (v3.8 or higher)
 - MongoDB Atlas account
 - ImageKit account
 
