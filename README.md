@@ -61,7 +61,7 @@
 ## ✨ Features
 
 ### **Intelligent Mood Tracking**
-- **AI Camera Detection**: Advanced mood analysis using FaceApp AI technology
+- **AI Camera Detection**: Advanced mood analysis using FacePlusPlus AI technology
 - **Manual Entry Option**: Traditional mood logging with customizable parameters
 - **Visual Analytics**: Interactive mood graphs to track emotional patterns over time
 - **Pattern Recognition**: Identify emotional trends and triggers
@@ -134,7 +134,6 @@
 ### 📋 Prerequisites
 - Code Editor
 - Node.js (v14 or higher)
-- Python (v3.8 or higher)
 - MongoDB Atlas account
 - ImageKit account
 
