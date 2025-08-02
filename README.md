@@ -125,7 +125,7 @@
 
   **Click above image to see Tranquilify in action! 🚀**
 
-  **(Note) Video was pre-recorded so it has lack of some features recording but you can try them on live iste as mentioned in features section .**
+  **(Note) Video was pre-recorded so it has lack of some features recording but you can try them on [Live Site](https://tranquilify.vercel.app) as mentioned in features section .**
 </div>
 ---
 
