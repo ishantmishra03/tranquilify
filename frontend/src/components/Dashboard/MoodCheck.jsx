@@ -17,7 +17,8 @@ const MoodCheck = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const manualMoods = ['happy', 'Neutral', 'Sad', 'Angry', 'Excited'];
+ const manualMoods = ['happiness', 'neutral', 'sadness', 'Angry', 'Excited', 'Surprised', 'Scared', 'Disgusted'];
+
 
   const startCamera = () => {
     navigator.mediaDevices.getUserMedia({ video: true })
