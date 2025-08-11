@@ -53,8 +53,6 @@ export const getUserStressFactors = async (req, res) => {
 
      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-
-    // Find all assessments for this user
      const assessments = await StressAssessment.find({
       user: userId,
       createdAt: { $gte: sevenDaysAgo },
@@ -64,7 +62,6 @@ export const getUserStressFactors = async (req, res) => {
       return res.json({ success: true, factors: [] });
     }
 
-    // Flatten all factors with their associated stressLevel
     const allFactors = [];
     assessments.forEach((assessment) => {
       assessment.stressFactors.forEach((factor) => {
@@ -72,7 +69,6 @@ export const getUserStressFactors = async (req, res) => {
       });
     });
 
-    // Aggregate counts and total levels by factor
     const factorMap = {};
 
     allFactors.forEach(({ factor, level }) => {
@@ -85,11 +81,10 @@ export const getUserStressFactors = async (req, res) => {
 
     const totalCount = allFactors.length;
 
-    // Format the results: average level and percentage of total
     const factors = Object.entries(factorMap).map(([factor, { count, totalLevel }]) => ({
       factor,
-      level: Math.round(totalLevel / count), // average stress level for this factor
-      percentage: Math.round((count / totalCount) * 100), // percent occurrence among all factors
+      level: Math.round(totalLevel / count), 
+      percentage: Math.round((count / totalCount) * 100),
     }));
 
     res.json({ success: true, factors });
@@ -115,6 +110,26 @@ export const getStressData = async (req,res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to load user stress data',
+    });
+  }
+}
+
+//Delete specific stressAssesement
+export const deleteAssessment = async (req,res) => {
+  try {
+    const {id} = req.params;
+    const assessment = await StressAssessment.findById(id);
+
+    if(!assessment){
+      return res.status(404).json({success: false, message : "Assessment Not found"});
+    }
+    const deletedAssessment = await StressAssessment.findByIdAndDelete(id);
+
+    res.status(200).json({success: true, message: "Deleted Successfully"});
+  } catch (error) {
+     res.status(500).json({
+      success: false,
+      message: 'Failed to delete',
     });
   }
 }

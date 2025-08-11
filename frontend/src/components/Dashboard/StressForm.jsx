@@ -11,6 +11,7 @@ export const StressForm = () => {
   const [stressFactors, setStressFactors] = useState([]);
   const [customFactor, setCustomFactor] = useState('');
   const [symptoms, setSymptoms] = useState([]);
+  const [customSymptom, setCustomSymptom] = useState('');
   const [copingStrategies, setCopingStrategies] = useState([]);
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,10 +21,12 @@ export const StressForm = () => {
     'Work/Career', 'Relationships', 'Health', 'Finances', 'Family',
     'School/Education', 'Social situations', 'Technology', 'News/Media', 'Other'
   ];
+
   const commonSymptoms = [
     'Headache', 'Muscle tension', 'Fatigue', 'Sleep problems', 'Anxiety',
     'Irritability', 'Difficulty concentrating', 'Appetite changes', 'Restlessness'
   ];
+
 
   const handleToggle = (item, setter) => {
     setter(prev =>
@@ -31,6 +34,7 @@ export const StressForm = () => {
     );
   };
 
+  
   const addCustomFactor = () => {
     if (customFactor.trim() && !stressFactors.includes(customFactor.trim())) {
       setStressFactors(prev => [...prev, customFactor.trim()]);
@@ -38,6 +42,14 @@ export const StressForm = () => {
     }
   };
 
+  const addCustomSymptom = () => {
+    if (customSymptom.trim() && !symptoms.includes(customSymptom.trim())) {
+      setSymptoms(prev => [...prev, customSymptom.trim()]);
+      setCustomSymptom('');
+    }
+  };
+
+ 
   const suggestStrategies = async () => {
     if (stressLevel === null) {
       toast.error('Please select your stress level first');
@@ -64,6 +76,7 @@ export const StressForm = () => {
     }
   };
 
+  
   const handleSubmit = async () => {
     if (stressLevel === null) {
       toast.error('Stress level is required');
@@ -73,8 +86,8 @@ export const StressForm = () => {
     try {
       const res = await axios.post('/api/stress', {
         stressLevel,
-        stressFactors,
-        symptoms,
+        stressFactors,  
+        symptoms,      
         copingStrategies,
         notes,
       });
@@ -100,6 +113,7 @@ export const StressForm = () => {
     const colors = ['bg-green-500', 'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'bg-red-600'];
     return colors[lvl] || 'bg-gray-300';
   };
+
   const getStressLabel = lvl => {
     const labels = ['Very Low', 'Low', 'Moderate', 'High', 'Very High'];
     return labels[lvl] || '';
@@ -107,7 +121,6 @@ export const StressForm = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-6 text-white">
         <div className="flex items-center space-x-3 mb-4">
           <Activity className="w-8 h-8" />
@@ -123,15 +136,11 @@ export const StressForm = () => {
         <div className={`rounded-2xl p-6 shadow-lg border ${isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-100'}`}>
           <h3 className={`text-xl font-semibold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Stress Level</h3>
           <div className="space-y-3 mb-6">
-            {[0,1,2,3,4].map(lvl => (
+            {[0, 1, 2, 3, 4].map(lvl => (
               <button
                 key={lvl}
                 onClick={() => setStressLevel(lvl)}
-                className={`w-full p-4 rounded-xl border-2 flex items-center justify-between ${
-                  stressLevel === lvl
-                    ? 'border-orange-500 bg-orange-50 dark:bg-orange-600/10'
-                    : `${isDarkMode ? 'border-gray-700 hover:border-gray-600 text-white' : 'border-gray-200 hover:border-gray-300'}`
-                }`}
+                className={`w-full p-4 rounded-xl border-2 flex items-center justify-between ${stressLevel === lvl ? 'border-orange-500 bg-orange-50 dark:bg-orange-600/10' : `${isDarkMode ? 'border-gray-700 hover:border-gray-600 text-white' : 'border-gray-200 hover:border-gray-300'}`}`}
               >
                 <div className={`w-4 h-4 rounded-full ${getStressColor(lvl)}`} />
                 <span className="font-medium">{getStressLabel(lvl)}</span>
@@ -140,22 +149,30 @@ export const StressForm = () => {
             ))}
           </div>
 
+          {/* Stress Factors */}
           <label className={`block font-medium mb-2 ${isDarkMode ? 'text-white' : ''}`}>Stress Factors</label>
           <div className="grid grid-cols-2 gap-2 mb-4">
             {predefinedFactors.map(f => (
               <button
                 key={f}
                 onClick={() => handleToggle(f, setStressFactors)}
-                className={`p-2 rounded-md border ${
-                  stressFactors.includes(f)
-                    ? 'border-orange-500 bg-orange-50 dark:bg-orange-600/10 text-orange-700 dark:text-orange-300'
-                    : `${isDarkMode ? 'border-gray-700 text-gray-300 hover:border-gray-600' : 'border-gray-200 text-gray-700 hover:border-gray-300'}`
-                }`}
+                className={`p-2 rounded-md border ${stressFactors.includes(f) ? 'border-orange-500 bg-orange-50 dark:bg-orange-600/10 text-orange-700 dark:text-orange-300' : `${isDarkMode ? 'border-gray-700 text-gray-300 hover:border-gray-600' : 'border-gray-200 text-gray-700 hover:border-gray-300'}`}`}
+              >
+                {f}
+              </button>
+            ))}
+          
+            {stressFactors.filter(f => !predefinedFactors.includes(f)).map(f => (
+              <button
+                key={f}
+                onClick={() => handleToggle(f, setStressFactors)}
+                className={`p-2 rounded-md border ${stressFactors.includes(f) ? 'border-orange-500 bg-orange-50 dark:bg-orange-600/10 text-orange-700 dark:text-orange-300' : `${isDarkMode ? 'border-gray-700 text-gray-300 hover:border-gray-600' : 'border-gray-200 text-gray-700 hover:border-gray-300'}`}`}
               >
                 {f}
               </button>
             ))}
           </div>
+
           <div className="flex gap-2 mb-6">
             <input
               value={customFactor}
@@ -167,22 +184,40 @@ export const StressForm = () => {
             <button onClick={addCustomFactor} className="bg-orange-500 text-white px-4 rounded-md">Add</button>
           </div>
 
+          {/* Symptoms */}
           <label className={`block font-medium mb-2 ${isDarkMode ? 'text-white' : ''}`}>Symptoms</label>
           <div className="grid grid-cols-1 gap-2 mb-6">
             {commonSymptoms.map(s => (
               <button
                 key={s}
                 onClick={() => handleToggle(s, setSymptoms)}
-                className={`p-2 rounded-md border text-left ${
-                  symptoms.includes(s)
-                    ? 'border-red-500 bg-red-50 dark:bg-red-600/10 text-red-700 dark:text-red-300'
-                    : `${isDarkMode ? 'border-gray-700 text-gray-300 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300 text-gray-700'}`
-                }`}
+                className={`p-2 rounded-md border text-left ${symptoms.includes(s) ? 'border-red-500 bg-red-50 dark:bg-red-600/10 text-red-700 dark:text-red-300' : `${isDarkMode ? 'border-gray-700 text-gray-300 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300 text-gray-700'}`}`}
+              >
+                {s}
+              </button>
+            ))}
+            {symptoms.filter(s => !commonSymptoms.includes(s)).map(s => (
+              <button
+                key={s}
+                onClick={() => handleToggle(s, setSymptoms)}
+                className={`p-2 rounded-md border text-left ${symptoms.includes(s) ? 'border-red-500 bg-red-50 dark:bg-red-600/10 text-red-700 dark:text-red-300' : `${isDarkMode ? 'border-gray-700 text-gray-300 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300 text-gray-700'}`}`}
               >
                 {s}
               </button>
             ))}
           </div>
+
+          <div className="flex gap-2 mb-6">
+            <input
+              value={customSymptom}
+              onChange={e => setCustomSymptom(e.target.value)}
+              placeholder="Add custom symptom"
+              onKeyPress={e => e.key === 'Enter' && addCustomSymptom()}
+              className={`flex-1 p-2 border rounded-md ${isDarkMode ? 'bg-gray-800 text-white border-gray-600' : ''}`}
+            />
+            <button onClick={addCustomSymptom} className="bg-red-500 text-white px-4 rounded-md">Add</button>
+          </div>
+          
         </div>
 
         {/* Right: Coping + Graph */}
@@ -210,11 +245,7 @@ export const StressForm = () => {
                   <button
                     key={c}
                     onClick={() => handleToggle(c, setCopingStrategies)}
-                    className={`p-3 rounded-lg border flex items-center space-x-2 ${
-                      copingStrategies.includes(c)
-                        ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-600/10 text-emerald-700 dark:text-emerald-300'
-                        : `${isDarkMode ? 'border-gray-700 text-gray-300 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300 text-gray-700'}`
-                    }`}
+                    className={`p-3 rounded-lg border flex items-center space-x-2 ${copingStrategies.includes(c) ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-600/10 text-emerald-700 dark:text-emerald-300' : `${isDarkMode ? 'border-gray-700 text-gray-300 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300 text-gray-700'}`}`}
                   >
                     {copingStrategies.includes(c) && <CheckCircle className="w-4 h-4 text-emerald-600" />}
                     <span>{c}</span>

@@ -22,6 +22,7 @@ import {
 import { DashboardMain } from "../../components/Dashboard/DashboardMain";
 import MoodCheck from "../../components/Dashboard/MoodCheck";
 import { StressForm } from "../../components/Dashboard/StressForm";
+import StressHistory from "../../components/Dashboard/StressHistory";
 import { HabitsPage } from "../../components/Dashboard/HabitsPage";
 import Soundscape from "../../components/Dashboard/Soundscape";
 import SelfCarePlanner from "../../components/Dashboard/SelfCarePlanner/SelfCarePlanner";
@@ -44,11 +45,8 @@ export const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Dropdown state and ref for avatar menu
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-
-  const navigate = useNavigate();
 
   //Dummy Data
   useEffect(() => {
@@ -84,7 +82,6 @@ export const Dashboard = () => {
     loadData();
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -105,6 +102,7 @@ export const Dashboard = () => {
     { id: "dashboard", label: "Dashboard", icon: Home },
     { id: "mood-check", label: "Mood Check", icon: Heart },
     { id: "stress-form", label: "Stress Form", icon: Activity },
+    { id: "stress-data", label: "Stress Data", icon: Activity },
     { id: "therapist", label: "Therapist", icon: Bot },
     { id: "habits", label: "Habits", icon: Target },
     { id: "soundscape", label: "Soundscape", icon: Waves },
@@ -144,6 +142,8 @@ export const Dashboard = () => {
         return <MoodCheck />;
       case "stress-form":
         return <StressForm />;
+      case "stress-data":
+        return <StressHistory />;
       case "habits":
         return <HabitsPage />;
       case "soundscape":

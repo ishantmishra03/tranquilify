@@ -6,6 +6,7 @@ import ProtectedRoute from "./config/ProtectedRoute";
 import BlogList from "./pages/BlogList";
 import AddBlog from "./pages/AddBlog";
 
+
 const App = () => {
   return (
     <div>

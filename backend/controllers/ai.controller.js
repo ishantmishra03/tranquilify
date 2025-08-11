@@ -107,11 +107,6 @@ Keep it concise and clear in **plain text**, not JSON. and don't add third-party
 export const journalPrompt = async (req, res) => {
   try {
     const { journals } = req.body;
-    // if (!Array.isArray(journals) || journals.length === 0) {
-    //   return res.status(400).json({ success: false, message: 'Journals list is required' });
-    // }
-
-    // Format journals with date and content
     const formattedEntries = journals.map((j, idx) => {
       const date = new Date(j.createdAt).toLocaleDateString('en-US', {
         weekday: 'short',

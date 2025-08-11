@@ -1,6 +1,6 @@
 import Habit from '../models/habit.models.js';
 
-// Helper to check if a date is today (ignoring time)
+ 
 const isToday = (someDate) => {
   const today = new Date();
   return someDate.getFullYear() === today.getFullYear() &&
@@ -8,27 +8,24 @@ const isToday = (someDate) => {
          someDate.getDate() === today.getDate();
 };
 
-// Calculate streak of consecutive days from sorted completion dates (descending)
 const calculateStreak = (completionDates) => {
   if (!completionDates.length) return 0;
 
-  // Convert all dates to just YYYY-MM-DD string for comparison
+  
   const dateSet = new Set(completionDates.map(date => new Date(date).toDateString()));
 
   let streak = 0;
-  let day = new Date(); // today
+  let day = new Date(); 
 
-  // Check today, yesterday, day before, ...
+
   while (dateSet.has(day.toDateString())) {
     streak++;
-    day.setDate(day.getDate() - 1); // move to previous day
+    day.setDate(day.getDate() - 1); 
   }
 
   return streak;
 };
 
-
-// Get all habits for the logged-in user
 export const getUserHabits = async (req, res) => {
   try {
     const habits = await Habit.find({ user: req.userId }).sort({ createdAt: -1 });
@@ -52,7 +49,6 @@ export const getLatestHabits = async (req, res) => {
   }
 };
 
-// Create a new habit
 export const createHabit = async (req, res) => {
   try {
     const { name, icon, color } = req.body;
@@ -77,7 +73,6 @@ export const createHabit = async (req, res) => {
   }
 };
 
-// Toggle habit completion for today (add completion date if not completed today, reject if already done)
 export const toggleHabitCompletion = async (req, res) => {
   try {
     const { id } = req.params;
@@ -87,18 +82,18 @@ export const toggleHabitCompletion = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Habit not found' });
     }
 
-    // Check if completed today
+    
     const hasCompletedToday = habit.completions.some(date => isToday(new Date(date)));
 
     if (hasCompletedToday) {
-      // Reject multiple completions on the same day
+     
       return res.status(400).json({ success: false, message: 'Habit already completed today' });
     }
 
-    // Add today's completion date
+   
     habit.completions.push(new Date());
 
-    // Calculate updated streak
+    
     habit.streak = calculateStreak(habit.completions);
 
     await habit.save();
@@ -110,7 +105,6 @@ export const toggleHabitCompletion = async (req, res) => {
   }
 };
 
-// Delete habit
 export const deleteHabit = async (req, res) => {
   try {
     const { id } = req.params;

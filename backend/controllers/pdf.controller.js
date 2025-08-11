@@ -7,7 +7,6 @@ export const generateMentalHealthPDF = async (req, res) => {
     const userId = req.userId;
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    // Fetch mood & stress data for last 7 days
     const moodLogs = await MoodLog.find({ user: userId, createdAt: { $gte: sevenDaysAgo } }).sort({ createdAt: 1 });
     const stressLogs = await StressAssessment.find({ user: userId, createdAt: { $gte: sevenDaysAgo } }).sort({ createdAt: 1 });
 
@@ -21,15 +20,13 @@ export const generateMentalHealthPDF = async (req, res) => {
       res.send(pdfData);
     });
 
-    // Title
     doc.fontSize(24).text("Mental Health Journal | Tranquilify", { align: "center" });
     doc.moveDown(2);
 
-    // Date
     doc.fontSize(12).fillColor("gray").text(`Generated on: ${new Date().toDateString()}`, { align: "right" });
     doc.moveDown();
 
-    // Mood Logs Section
+   
     doc.fillColor("black").fontSize(18).text("Mood Logs", { underline: true });
     doc.moveDown(0.5);
     if (moodLogs.length === 0) {
@@ -42,7 +39,7 @@ export const generateMentalHealthPDF = async (req, res) => {
 
     doc.moveDown(2);
 
-    // Stress Logs Section
+    
     doc.fontSize(18).fillColor("black").text("Stress Assessments", { underline: true });
     doc.moveDown(0.5);
     if (stressLogs.length === 0) {
@@ -51,17 +48,17 @@ export const generateMentalHealthPDF = async (req, res) => {
       stressLogs.forEach(s => {
         doc.fontSize(12).fillColor("black").text(`• ${new Date(s.createdAt).toLocaleDateString()} - Stress Level: ${s.stressLevel}/4`);
         
-        // Symptoms
+        
         if (s.symptoms && s.symptoms.length > 0) {
           doc.fontSize(11).fillColor("gray").text(`   • Symptoms: ${s.symptoms.join(", ")}`);
         }
 
-        // Stress Factors
+        
         if (s.stressFactors && s.stressFactors.length > 0) {
           doc.fontSize(11).fillColor("gray").text(`   • Stress Factors: ${s.stressFactors.join(", ")}`);
         }
 
-        doc.moveDown(0.5); // spacing between entries
+        doc.moveDown(0.5); 
       });
     }
 

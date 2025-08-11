@@ -1,3 +1,5 @@
+import User from '../models/user.models.js';
+
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 

@@ -8,6 +8,7 @@ import { Auth } from "./pages/Auth/Auth";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import Therapist from "./pages/Therapist/Therapist";
 import StressData from "./components/Dashboard/StressData";
+import StressHistory from "./components/Dashboard/StressHistory";
 
 import { MoodGraphPage } from "./pages/Figure/MoodGraphPage";
 import { StressGraphPage } from "./pages/Figure/StressGraphPage";
@@ -92,6 +93,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <StressGraphPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/stress-history"
+          element={
+            <ProtectedRoute>
+              <StressHistory />
             </ProtectedRoute>
           }
         />

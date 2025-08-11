@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import MoodLog from '../models/mood.models.js';
+import axios from 'axios';
 
 // Add new mood log for a user
 export const addNewMoodData = async (req, res) => {
@@ -93,8 +94,6 @@ export const getMoodData = async (req, res) => {
 };
 
 //Analyze Mood
-import axios from 'axios';
-
 export const analyzeMood = async (req, res) => {
   try {
     const { image } = req.body; 
@@ -130,7 +129,7 @@ export const analyzeMood = async (req, res) => {
 
     const emotions = data.faces[0].attributes.emotion;
 
-    // Find dominant emotion (highest score)
+    
     const dominantEmotion = Object.entries(emotions).reduce((max, curr) =>
       curr[1] > max[1] ? curr : max
     )[0];
