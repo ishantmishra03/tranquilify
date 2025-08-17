@@ -18,7 +18,7 @@ import BlogPage from "./components/Blogs/BlogPage";
 
 import ProtectedRoute from "./config/ProtectedRoute";
 import Settings from "./pages/Settings/Settings";
-import Agent from "./pages/Agent";
+// import Agent from "./pages/Agent";
 
 const App = () => {
   const { setIsAuthenticated, setLoading } = useAppContext();
@@ -55,14 +55,14 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/agent"
           element={
             <ProtectedRoute>
               <Agent />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path="/therapist"
           element={

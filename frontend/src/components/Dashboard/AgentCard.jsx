@@ -1,14 +1,16 @@
 import { Bot } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
+import { toast } from "react-hot-toast";
 
 const AgentCard = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { isDarkMode } = useAppContext();
 
   return (
     <div
-      onClick={() => navigate("/agent")}
+      // onClick={() => navigate("/agent")}
+      onClick={() => toast.success("Feature is temporarily disabled")}
       className={`cursor-pointer p-6 rounded-2xl border group transition-all duration-300 shadow-lg hover:shadow-xl ${
         isDarkMode
           ? "bg-gray-900 border-gray-700 text-white hover:border-sky-600"
